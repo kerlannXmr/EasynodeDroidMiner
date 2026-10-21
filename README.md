@@ -8,7 +8,7 @@
   <b>Run your own Monero node on your Android phone — with built-in solo mining</b><br>
   <br>
   Pruned node · Built-in Tor  + onion address  · Verified monerod (SHA-256) · Self-updating .<br> 
-  IP Bannlist . Blockchain on SDcard . Wallet ready . Multiling . Logs Tab
+  IP Bannlist . Blockchain on SDcard . Wallet ready . Multiling . Logs Tab . Mining
 </p>
 
 <p align="center">
