@@ -177,7 +177,7 @@
     <string name="mine_pause_hot_set">Pause if the phone gets hot</string>
     <string name="mine_pause_hot_set_hint">Pauses from 60 °C, resumes as soon as it cools down.</string>
     <string name="mine_warn_title">Good to know</string>
-    <string name="mine_warn">Solo mining is a lottery: a phone has very little chance of finding a block. If it does, the whole reward (about 0.6 XMR) goes to your address. Mining heats the phone, wears the battery and slows down the node. It only runs when the node is synchronized.</string>
+    <string name="mine_warn">Solo mining is a lottery: a phone has very little chance of finding a block. If it does, the whole reward (about 0.6 XMR) goes to your address. Mining heats the phone, wears the battery and slows down the node. It only runs when the node is synchronized. It uses the light mode (about 256 MB of memory) so that Android doesn’t close the app.</string>
     <string name="notif_mining">mining %1$d H/s</string>
     <string name="log_mine_started">Mining started (%1$d cores)</string>
     <string name="log_mine_stopped">Mining stopped</string>
