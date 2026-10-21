@@ -110,7 +110,7 @@
     <string name="upd_notif_open">Tap to open the app and install it.</string>
     <string name="set_auto_update">Install updates automatically</string>
     <string name="set_auto_update_hint">While the node runs: downloads, checks the signature, stops the node, installs and restarts it. Android may ask for one confirmation. Never on mobile data unless allowed above.</string>
-    <string name="header_subtitle">Monero node · miner</string>
+    <string name="header_subtitle">Monero Miner</string>
     <string name="link_github">Source code</string>
     <string name="link_star">⭐ Give a star</string>
     <string name="link_star_hint">To star: tap “Star” at the top of the page.</string>
