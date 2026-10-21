@@ -144,10 +144,14 @@ class NodeService : Service() {
 
             val pb = ProcessBuilder(args).redirectErrorStream(true).directory(dataDir)
             pb.environment()["HOME"] = filesDir.absolutePath
-            // Minage : interdit le « mode rapide » de RandomX (≈ 2,3 Go de mémoire) qui fait fermer
-            // l'app par Android sur un téléphone. Le mineur utilise alors le mode léger (≈ 256 Mo).
-            // 4 = RANDOMX_FLAG_FULL_MEM. Sans effet sur le nœud lui-même (déjà en mode léger).
-            pb.environment()["MONERO_RANDOMX_UMASK"] = "4"
+            // Minage : par défaut on interdit le « mode rapide » de RandomX (≈ 2,3 Go de mémoire) qui fait
+            // fermer l'app par Android sur la plupart des téléphones. Le mineur utilise alors le mode léger
+            // (≈ 256 Mo). 4 = RANDOMX_FLAG_FULL_MEM. Sans effet sur le nœud lui-même (déjà en mode léger).
+            // Le mode rapide n'est autorisé que si l'utilisateur l'a choisi ET que le téléphone a ≥ 8 Go.
+            val fast = MiningStore.load(this).fastMode && fastModeAllowed(this)
+            if (!fast) pb.environment()["MONERO_RANDOMX_UMASK"] = "4"
+            NodeState.setFastModeStarted(fast)
+            if (fast) NodeState.appendLog(getString(R.string.log_mine_fast))
             val proc = pb.start()
             process = proc
             acquireLocks()

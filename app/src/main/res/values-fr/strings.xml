@@ -176,10 +176,15 @@
     <string name="mine_pause_hot_set">Pause si le téléphone chauffe</string>
     <string name="mine_pause_hot_set_hint">Pause à partir de 60 °C, reprise dès que ça redescend.</string>
     <string name="mine_warn_title">À savoir</string>
-    <string name="mine_warn">Le minage solo est une loterie : un téléphone a très peu de chances de trouver un bloc. S’il en trouve un, toute la récompense (environ 0,6 XMR) va sur ton adresse. Le minage fait chauffer le téléphone, use la batterie et ralentit le nœud. Il ne tourne que quand le nœud est synchronisé. Il utilise le mode léger (environ 256 Mo de mémoire) pour qu’Android ne ferme pas l’app.</string>
+    <string name="mine_warn">Le minage solo est une loterie : un téléphone a très peu de chances de trouver un bloc. S’il en trouve un, toute la récompense (environ 0,6 XMR) va sur ton adresse. Le minage fait chauffer le téléphone, use la batterie et ralentit le nœud. Il ne tourne que quand le nœud est synchronisé. Par défaut, il utilise le mode léger (environ 256 Mo de mémoire) pour qu’Android ne ferme pas l’app.</string>
     <string name="notif_mining">minage %1$d H/s</string>
     <string name="log_mine_started">Minage démarré (%1$d cœurs)</string>
     <string name="log_mine_stopped">Minage arrêté</string>
     <string name="log_mine_failed">Le minage n’a pas pu démarrer : %1$s</string>
     <string name="log_mine_block">Bloc trouvé par ton téléphone !</string>
+    <string name="mine_fast">Mode rapide</string>
+    <string name="mine_fast_hint">5 à 10 fois plus rapide, mais utilise environ 2,3 Go de mémoire et met environ 30 s à se préparer. Si l’app se ferme toute seule, désactive cette option.</string>
+    <string name="mine_fast_restart">Arrête puis redémarre le nœud pour appliquer ce changement.</string>
+    <string name="mine_fast_unavailable">Mémoire insuffisante (%1$s), 8 Go minimum</string>
+    <string name="log_mine_fast">Minage : mode rapide (environ 2,3 Go de mémoire)</string>
 </resources>

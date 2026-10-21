@@ -71,10 +71,17 @@ object NodeState {
         if (s == NodeStatus.STOPPED || s == NodeStatus.ERROR) {
             _info.value = null
             _mining.value = null
+            _fastModeStarted.value = null
         }
     }
 
     fun setMining(m: MiningInfo?) { _mining.value = m }
+
+    /** Mode du minage choisi au démarrage de monerod (true = rapide) ; null = nœud arrêté. */
+    private val _fastModeStarted = MutableStateFlow<Boolean?>(null)
+    val fastModeStarted: StateFlow<Boolean?> = _fastModeStarted
+
+    fun setFastModeStarted(v: Boolean?) { _fastModeStarted.value = v }
 
     fun wakeMining() { _miningWake.tryEmit(Unit) }
 
