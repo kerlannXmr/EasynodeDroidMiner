@@ -1,0 +1,105 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      monero_version:
+        description: "Version de monerod (laisser vide = dernière version officielle)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Choisir la version de monerod
+        env:
+          ASKED: ${{ github.event.inputs.monero_version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V="${ASKED#v}"
+          if [ -z "$V" ]; then
+            V=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+                https://api.github.com/repos/monero-project/monero/releases/latest \
+                | python3 -c 'import sys,json; print(json.load(sys.stdin)["tag_name"].lstrip("v"))')
+          fi
+          [ -n "$V" ] || { echo "Impossible de déterminer la version de monero"; exit 1; }
+          echo "Version de monerod : $V"
+          echo "MONERO_VERSION=$V" >> "$GITHUB_ENV"
+
+      # Numéro lisible : 1.0.0.1, 1.0.0.2… (+1 à chaque publication "Run workflow").
+      # On lit le numéro de la dernière version publiée ; une version de test
+      # (simple envoi de fichiers) prend le numéro suivant suivi de "-test".
+      - name: Numéro de version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LAST=$(gh release view --repo "$GITHUB_REPOSITORY" --json name -q .name 2>/dev/null || true)
+          N=$(printf '%s' "$LAST" | grep -oE '1\.0\.0\.[0-9]+' | head -1 | awk -F. '{print $4}')
+          N=$(( ${N:-0} + 1 ))
+          V="1.0.0.$N"
+          [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] || V="$V-test"
+          echo "Version de l'application : $V"
+          echo "APP_VERSION=$V" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Télécharger et vérifier monerod (SHA256 + GPG)
+        run: bash scripts/fetch_monerod.sh
+
+      - name: Préparer la clé de signature
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+
+      - name: Compiler l'APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --stacktrace
+          cp app/build/outputs/apk/release/app-release.apk "EasynodeDroidMiner-${APP_VERSION}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EasynodeDroidMiner-${{ env.APP_VERSION }}
+          path: EasynodeDroidMiner-*.apk
+
+      # Uniquement quand on clique sur "Run workflow" : c'est ce qui prévient
+      # les utilisateurs. Un simple envoi de fichiers = version de test.
+      # Étiquette technique sur 4 chiffres (r0036…) : GitHub trie les versions dans le bon ordre
+      # et les applications déjà installées reconnaissent ce format pour se mettre à jour.
+      - name: Nom de la version
+        if: github.event_name == 'workflow_dispatch'
+        run: printf 'RELEASE_TAG=r%04d\n' "$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+
+      - name: Publier la version pour les utilisateurs
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: EasynodeDroidMiner ${{ env.APP_VERSION }} · monerod ${{ env.MONERO_VERSION }}
+          body: |
+            **EasynodeDroidMiner ${{ env.APP_VERSION }}** avec monerod **${{ env.MONERO_VERSION }}** (vérifié GPG + SHA256).
+
+            Installation : téléchargez le fichier `.apk` ci-dessous sur votre téléphone et ouvrez-le.
+            Mise à jour : installez-le **par-dessus** l'ancienne version, sans désinstaller (la blockchain est conservée).
+          files: EasynodeDroidMiner-*.apk
+          make_latest: true
