@@ -841,6 +841,20 @@ fun MiningScreen() {
                     enabled = m.enabled || m.addressValid,
                 )
             }
+            // Mode rapide juste sous l'interrupteur « Minage solo »
+            if (fastAllowed) {
+                SwitchRow(stringResource(R.string.mine_fast), stringResource(R.string.mine_fast_hint), m.fastMode, true) {
+                    update(m.copy(fastMode = it))
+                }
+                // Le mode est choisi au démarrage de monerod : il faut redémarrer le nœud pour l'appliquer
+                if (fastStarted != null && fastStarted != m.fastMode) Hint(stringResource(R.string.mine_fast_restart), Warn)
+            } else {
+                Column {
+                    Text(stringResource(R.string.mine_fast))
+                    Hint(stringResource(R.string.mine_fast_unavailable, bytes(ctx, totalRam(ctx))))
+                }
+            }
+            HorizontalDivider()
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(10.dp).background(stateColor, CircleShape))
                 Spacer(Modifier.width(8.dp))
@@ -903,18 +917,6 @@ fun MiningScreen() {
             }
             SwitchRow(stringResource(R.string.mine_pause_hot_set), stringResource(R.string.mine_pause_hot_set_hint), m.pauseHot, true) {
                 update(m.copy(pauseHot = it))
-            }
-
-            HorizontalDivider()
-            if (fastAllowed) {
-                SwitchRow(stringResource(R.string.mine_fast), stringResource(R.string.mine_fast_hint), m.fastMode, true) {
-                    update(m.copy(fastMode = it))
-                }
-                // Le mode est choisi au démarrage de monerod : il faut redémarrer le nœud pour l'appliquer
-                if (fastStarted != null && fastStarted != m.fastMode) Hint(stringResource(R.string.mine_fast_restart), Warn)
-            } else {
-                Text(stringResource(R.string.mine_fast))
-                Hint(stringResource(R.string.mine_fast_unavailable, bytes(ctx, totalRam(ctx))))
             }
         }
 
