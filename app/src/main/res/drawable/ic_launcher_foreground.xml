@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Logo EasynodeDroid Miner : logo EasynodeDroid en rouge + badge pioche en bas à droite.
+     Le tout est réduit (0.86) pour que le badge reste visible quand le téléphone découpe l'icône en rond. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <path android:strokeColor="#F26822" android:strokeWidth="4"
-        android:pathData="M54,26a28,28 0 1,0 0.01,0z" />
-    <path android:strokeColor="#FFFFFF" android:strokeWidth="4.5"
-        android:strokeLineJoin="round" android:strokeLineCap="round"
-        android:pathData="M38,68 L38,42 L54,58 L70,42 L70,68" />
-    <path android:fillColor="#F26822" android:pathData="M38,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
-    <path android:fillColor="#F26822" android:pathData="M70,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
-    <path android:fillColor="#F26822" android:pathData="M54,58m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
-    <path android:fillColor="#FFFFFF" android:pathData="M38,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
-    <path android:fillColor="#FFFFFF" android:pathData="M70,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
+    <group android:scaleX="0.86" android:scaleY="0.86" android:pivotX="54" android:pivotY="54">
+        <!-- Cercle et M (comme EasynodeDroid, mais en rouge) -->
+        <path android:strokeColor="#E54545" android:strokeWidth="4"
+            android:pathData="M54,26a28,28 0 1,0 0.01,0z" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="4.5"
+            android:strokeLineJoin="round" android:strokeLineCap="round"
+            android:pathData="M38,68 L38,42 L54,58 L70,42 L70,68" />
+        <path android:fillColor="#E54545" android:pathData="M38,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <path android:fillColor="#E54545" android:pathData="M70,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <path android:fillColor="#E54545" android:pathData="M54,58m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <path android:fillColor="#FFFFFF" android:pathData="M38,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
+        <path android:fillColor="#FFFFFF" android:pathData="M70,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
+        <!-- Badge pioche : contour couleur du fond, rond rouge, pioche blanche -->
+        <path android:fillColor="#1E1E1E" android:pathData="M73,73m-13.2,0a13.2,13.2 0 1,0 26.4,0a13.2,13.2 0 1,0 -26.4,0" />
+        <path android:fillColor="#E54545" android:pathData="M73,73m-11,0a11,11 0 1,0 22,0a11,11 0 1,0 -22,0" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="1.6" android:strokeLineCap="round"
+            android:pathData="M68.3125,77.6875 L75.75,70.25" />
+        <path android:strokeColor="#FFFFFF" android:strokeWidth="1.7" android:strokeLineCap="round"
+            android:pathData="M70.8125,67.6875 Q77.375,68.3125 78.3125,75.1875" />
+    </group>
 </vector>

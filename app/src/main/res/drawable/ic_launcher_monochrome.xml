@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icône « thème » d’Android 13+ (une seule couleur) : logo simple, sans le badge pioche -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:strokeColor="#F26822" android:strokeWidth="4"
+        android:pathData="M54,26a28,28 0 1,0 0.01,0z" />
+    <path android:strokeColor="#FFFFFF" android:strokeWidth="4.5"
+        android:strokeLineJoin="round" android:strokeLineCap="round"
+        android:pathData="M38,68 L38,42 L54,58 L70,42 L70,68" />
+    <path android:fillColor="#F26822" android:pathData="M38,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+    <path android:fillColor="#F26822" android:pathData="M70,42m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+    <path android:fillColor="#F26822" android:pathData="M54,58m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M38,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M70,68m-4,0a4,4 0 1,0 8,0a4,4 0 1,0 -8,0" />
+</vector>
