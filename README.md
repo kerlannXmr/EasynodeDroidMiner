@@ -31,7 +31,7 @@
 
 ---
 
-> **EasynodeDroid Miner** is the version of [EasynodeDroid](https://github.com/kerlannXmr/EasynodeDroid) with a **Mining** tab.
+> **EasynodeDroidMiner** is the version of [EasynodeDroid](https://github.com/kerlannXmr/EasynodeDroid) with a **Mining** tab.
 > It is a separate app (`org.kerlann.easynode.miner`): it installs next to EasynodeDroid and has its own blockchain.
 > Only one of the two nodes can run at a time (they use the same ports): stop one before starting the other.
 > Both apps are signed with the same key and are published by the same author.
