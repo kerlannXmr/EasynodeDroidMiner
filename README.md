@@ -58,6 +58,7 @@
 <p align="center">
   <img src="docs/screenshots/overview.jpg" alt="EasynodeDroid Miner screens: Node, Settings, Mining, Log and Wallet" width="100%">
 </p>
+<p align="center"><img src="docs/screenshots/demo.gif" alt="EasynodeDroid Miner in action" width="300"></p>
 
 ---
 
