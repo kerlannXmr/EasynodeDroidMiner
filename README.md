@@ -17,6 +17,7 @@
   <a href="#requirements">Requirements</a> •
   <a href="#installation">Installation</a> •
   <a href="#usage">Usage</a> •
+  <a href="#mining">Mining</a> •
   <a href="#connecting-a-wallet">Connect a wallet</a> •
   <a href="#tor">Tor</a> •
   <a href="#configuration">Configuration</a> •
@@ -32,7 +33,8 @@
 
 > **EasynodeDroid Miner** is the experimental version of [EasynodeDroid](https://github.com/kerlannXmr/EasynodeDroid) with a **Mining** tab.
 > It is a separate app (`org.kerlann.easynode.miner`): it installs next to EasynodeDroid and has its own blockchain.
-> Only one of the two nodes can run at a time (they use the same ports).
+> Only one of the two nodes can run at a time (they use the same ports): stop one before starting the other.
+> Both apps are signed with the same key and are published by the same author.
 
 ## Features
 
@@ -46,14 +48,15 @@
 - **Internal storage or SD card** – choose where the blockchain lives.
 - **In-app updates** – the app checks for new versions, verifies that the new APK is signed with the same key, stops the node cleanly, updates itself and restarts the node.
 - **English / French** – follows the phone language or can be chosen in the app.
-- **Solo mining** – a **Mining** tab uses the miner built into `monerod` (no extra program). It pauses automatically on battery or when the phone reaches 60 °C.
+- **Solo mining** – a **Mining** tab uses the miner built into `monerod` (no extra program to download): choose your payout address and the number of cores, see the speed (H/s), blocks found and your estimated chance.
+- **Phone-friendly mining** – light mode by default (about 256 MB of memory), optional **fast mode** on phones with 8 GB of memory or more, automatic pause on battery or when the phone gets too hot (60 °C).
 
 ---
 
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/overview.jpg" alt="EasynodeDroid screens: Node, Settings, Log and Wallet" width="100%">
+  <img src="docs/screenshots/overview.jpg" alt="EasynodeDroid Miner screens: Node, Settings, Mining, Log and Wallet" width="100%">
 </p>
 
 ---
@@ -67,7 +70,7 @@
 | **Android** | 8.0 or newer |
 | **Processor** | ARM64 (arm64-v8a), almost every phone since 2017 |
 | **Storage** | ~115 GB free for the pruned blockchain, plus room to grow (256 GB SD card or more recommended) |
-| **RAM** | 3 GB or more recommended |
+| **RAM** | 3 GB or more recommended (8 GB or more for the mining **fast mode**) |
 | **Network** | Wi-Fi strongly recommended: the first sync downloads tens of GB |
 
 The first synchronization takes from several hours to several days depending on the phone. Keep the phone **plugged in** and on **Wi-Fi**.
@@ -90,6 +93,8 @@ The first synchronization takes from several hours to several days depending on 
 1. On your phone, open the **[latest release](https://github.com/kerlannXmr/EasynodeDroidMiner/releases/latest)** and download the `.apk` file.
 2. Open it and allow installation from this source when Android asks.
 3. If Play Protect warns about an unknown app, tap **More details › Install anyway** (the app is not distributed through the Play Store).
+
+EasynodeDroid Miner installs **next to** EasynodeDroid (it does not replace it). The two apps keep their own blockchain and their own settings.
 
 **Updates:** nothing to do. When a new version is published, the app shows **“New version available”** and can install it for you. Always install updates **over** the existing app: the blockchain is kept. Uninstalling the app deletes the blockchain (this is an Android rule).
 
@@ -114,22 +119,59 @@ The **Log** tab shows the live output of `monerod`.
 
 Tap **Stop node** (in the app or in the notification). `monerod` is stopped cleanly so the database stays safe.
 
-### Mining
-
-The **Mining** tab uses the miner built into `monerod`:
-
-1. Paste the **main address** of your wallet (it starts with `4`; subaddresses starting with `8` are refused by `monerod`).
-2. Choose the number of CPU cores.
-3. Turn on **Solo mining**. Mining starts when the node is synchronized (and, by default, only while the phone is charging).
-
-Solo mining is a lottery: a phone has very little chance of finding a block, but if it does, the whole block reward goes to your address. Mining heats the phone, wears the battery and slows down the node.
-
 ### Copying an existing blockchain
 
 You can copy a blockchain from a PC instead of syncing from scratch:
 
 1. Prune it on the PC first with `monero-blockchain-prune` (copying a full blockchain works, but the file stays ~230 GB on the card).
 2. Copy `data.mdb` to `Android/data/org.kerlann.easynode.miner/files/bitmonero/lmdb/` on the SD card (card formatted as **exFAT**).
+
+---
+
+## Mining
+
+The **Mining** tab uses the miner built into `monerod`. Nothing else is downloaded or installed.
+
+### Start mining
+
+1. Wait until the node is **synchronized** (the Node tab shows *Node synchronized*).
+2. In **Mining settings**, paste the **main address** of your wallet: it starts with `4`. Subaddresses (starting with `8`) are refused by `monerod`.
+3. Choose the number of cores.
+4. Turn on **Solo mining**.
+
+The tab then shows the speed (H/s), the cores used, the blocks found and the estimated time to find a block. The notification also shows the speed, and the **Log** tab shows when mining starts, stops or pauses.
+
+Mining starts and stops on its own: it waits for the node to be synchronized, pauses when a condition is not met, and starts again after an app update or a node restart.
+
+### Mining settings
+
+| Setting | Description | Default |
+|---|---|---|
+| Solo mining | Turns mining on or off (needs a valid address) | Off |
+| Fast mode | 5 to 10 times faster, but uses about 2.3 GB of memory. Only offered on phones with **8 GB of memory or more**. Restart the node to apply it | Off |
+| Payout address | Main address of your wallet (starts with `4`) | – |
+| Cores | Number of CPU cores used for mining | 1 |
+| Only while charging | Pauses mining when the phone runs on battery | On |
+| Pause if the phone gets hot | Pauses mining from 60 °C (battery temperature) or if Android reports a severe overheating, and resumes as soon as it cools down | On |
+
+### Light mode and fast mode
+
+- **Light mode (default)** uses about 256 MB of memory. It is slow (for example about 24 H/s on a Samsung Galaxy A05s with 1 core) but works on every phone.
+- **Fast mode** uses about 2.3 GB of memory and needs about 30 seconds to prepare. On phones with less memory, Android closes the app, which is why it is only offered from 8 GB. If the app closes by itself, turn fast mode off.
+
+### What can you expect?
+
+Solo mining is a **lottery**: if your phone finds a block, the **whole reward (about 0.6 XMR)** goes to your address; otherwise you get nothing. There are no small regular payments.
+
+With the Monero network at about 6 GH/s (October 2026):
+
+| Speed | One block on average every… |
+|---|---|
+| 24 H/s (phone, light mode) | ~1,000 years |
+| 200 H/s (phone, fast mode) | ~120 years |
+| 23,000 H/s (powerful PC) | ~1 year |
+
+Mining heats the phone, wears the battery and slows down the node. On a phone, see it as a fun way to take part in the Monero network, not as a source of income.
 
 ---
 
@@ -199,6 +241,13 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 **The node stops when the screen is off**
 - Disable battery optimization in **Settings**, or in *Android Settings › Apps › EasynodeDroid Miner › Battery › Unrestricted*.
 
+**The app closes when mining starts**
+- Turn **Fast mode** off: the phone does not have enough free memory for it. Light mode works on every phone.
+
+**Mining does not start**
+- The node must be synchronized first, and the address must be a **main address** starting with `4`.
+- With **Only while charging** on, plug the phone in. The status line in the Mining tab (and the Log tab) shows why mining is paused.
+
 **Sync is slow**
 - The first sync is long by nature. Keep the phone plugged in, on Wi-Fi, and prefer internal storage or a fast (A2 / U3) SD card.
 
@@ -211,7 +260,7 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 
 - Full RPC listens on `127.0.0.1` only. Other devices (local network or .onion) only get **restricted RPC**, on port 18089.
 - The .onion address only gives access to restricted RPC.
-- The app holds **no wallet and no keys**: it only runs the node.
+- The app holds **no wallet and no keys**: it only runs the node. For mining, it only needs your **public** address.
 - `monerod` is the official binary, verified with the Monero Project's GPG signatures at build time.
 - Updates are only installed if the new APK is signed with the same key as the installed app.
 
@@ -245,6 +294,6 @@ It bundles third-party software under their own licenses: `monerod` ([BSD-3-Clau
 
 ## Disclaimer
 
-This software is provided as is, without warranty. Running a node uses storage, data and battery. You are responsible for how you use it.
+This software is provided as is, without warranty. Running a node uses storage, data and battery. Mining heats the phone and wears the battery. You are responsible for how you use it.
 
 <p align="center">Made with ❤️ for the Monero community</p>
