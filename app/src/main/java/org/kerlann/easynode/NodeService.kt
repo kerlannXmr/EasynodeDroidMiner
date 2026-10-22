@@ -50,6 +50,12 @@ class NodeService : Service() {
         private const val UPDATE_CHANNEL_ID = "updates"
         private const val UPDATE_NOTIF_ID = 2
         private const val UPDATE_INTERVAL_MS = 12L * 3600 * 1000
+        /** Code de sortie quand le système tue monerod de force (128 + signal 9). */
+        private const val EXIT_KILLED = 137
+        /** Redémarrage automatique : 30 s d'attente, au maximum 3 fois par heure. */
+        private const val RESTART_DELAY_S = 30
+        private const val MAX_RESTARTS = 3
+        private const val RESTART_WINDOW_MS = 3600L * 1000
 
         fun start(ctx: Context) {
             ContextCompat.startForegroundService(ctx, Intent(ctx, NodeService::class.java).setAction(ACTION_START))
@@ -99,10 +105,45 @@ class NodeService : Service() {
 
     // ── Exécution ───────────────────────────────────────────────────────────
 
+    /**
+     * Fait tourner monerod. Si le téléphone le tue de force (code 137, par ex. Samsung pendant le minage),
+     * le nœud redémarre tout seul après 30 s, au maximum 3 fois par heure.
+     */
     private suspend fun runNode() {
+        val restarts = ArrayDeque<Long>()
+        try {
+            while (true) {
+                val killed = runOnce()
+                if (!killed || stopping) break
+                val now = System.currentTimeMillis()
+                while (restarts.isNotEmpty() && now - restarts.first() > RESTART_WINDOW_MS) restarts.removeFirst()
+                if (restarts.size >= MAX_RESTARTS) {
+                    NodeState.fail(getString(R.string.err_killed_too_often, MAX_RESTARTS))
+                    break
+                }
+                restarts.addLast(now)
+                NodeState.appendLog(getString(R.string.log_killed_restart, EXIT_KILLED, RESTART_DELAY_S))
+                NodeState.setMining(null)
+                NodeState.setStatus(NodeStatus.STARTING)
+                updateNotification(getString(R.string.notif_restarting))
+                delay(RESTART_DELAY_S * 1000L)
+                if (stopping) break
+            }
+        } finally {
+            process = null
+            TorManager.stop(this)
+            releaseLocks()
+            // Après une erreur, l'état ERROR reste affiché ; sinon on passe à « Arrêté »
+            if (NodeState.status.value != NodeStatus.ERROR) NodeState.setStatus(NodeStatus.STOPPED)
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+            stopSelf()
+        }
+    }
+
+    /** Un démarrage de monerod. Renvoie true s'il a été tué par le système (redémarrage possible). */
+    private suspend fun runOnce(): Boolean {
         val s = SettingsStore.load(this)
         NodeState.setStatus(NodeStatus.STARTING)
-        var failed = false
         try {
             val bin = binary(this)
             if (!bin.exists()) throw IllegalStateException(getString(R.string.err_no_binary))
@@ -122,7 +163,7 @@ class NodeService : Service() {
                 if (count > 0) banFile = f
             }
 
-            if (stopping) return
+            if (stopping) return false
 
             // Tor intégré : adresse .onion pour les wallets + transactions via Tor
             var torSocks: Int? = null
@@ -134,7 +175,7 @@ class NodeService : Service() {
                 tor.second?.let { NodeState.appendLog(getString(R.string.log_tor_onion, it, TorManager.ONION_PORT)) }
             }
 
-            if (stopping) return
+            if (stopping) return false
 
             val args = buildArgs(bin, dataDir, s, banFile, torSocks)
             val shown = args.joinToString(" ").let { line ->
@@ -181,22 +222,19 @@ class NodeService : Service() {
             withTimeoutOrNull(3_000) { reader.join() }
             process = null
 
-            if (!stopping && exit != 0) {
-                failed = true
-                NodeState.fail(getString(R.string.err_exit, exit))
-            }
+            if (!stopping && exit == EXIT_KILLED) return true
+            if (!stopping && exit != 0) NodeState.fail(getString(R.string.err_exit, exit))
+            return false
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            failed = true
             NodeState.fail(e.message ?: e.toString())
+            return false
         } finally {
+            // Nettoyage entre deux démarrages (Tor repart proprement au démarrage suivant)
             process = null
             TorManager.stop(this)
             releaseLocks()
-            if (!failed) NodeState.setStatus(NodeStatus.STOPPED)
-            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-            stopSelf()
         }
     }
 

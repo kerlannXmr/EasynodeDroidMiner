@@ -188,4 +188,7 @@
     <string name="mine_fast_restart">Stop and restart the node to apply this change.</string>
     <string name="mine_fast_unavailable">Not enough memory (%1$s), 8 GB minimum</string>
     <string name="log_mine_fast">Mining: fast mode (about 2.3 GB of memory)</string>
+    <string name="log_killed_restart">!! The phone stopped monerod (code %1$d). Restarting the node in %2$d s…</string>
+    <string name="err_killed_too_often">The phone stopped monerod %1$d times in one hour: the node has been stopped. Try mining with fewer cores or only while charging.</string>
+    <string name="notif_restarting">Restarting…</string>
 </resources>
