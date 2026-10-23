@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import org.torproject.jni.TorService
@@ -18,6 +20,9 @@ import kotlin.coroutines.resume
  * - fournit un proxy SOCKS pour diffuser les transactions via Tor (--tx-proxy).
  * Orbot n'est pas nécessaire.
  */
+/** État réel de Tor (pas l'option) : arrêté, en cours de connexion, en marche. */
+enum class TorStatus { OFF, STARTING, ON }
+
 object TorManager {
     /** Port du RPC restreint exposé sur l'adresse .onion (port standard des nœuds publics). */
     const val ONION_PORT = NodeService.RESTRICTED_PORT
@@ -26,6 +31,10 @@ object TorManager {
     private const val KEY_ONION = "onionAddress"
 
     private var connection: ServiceConnection? = null
+    private var service: TorService? = null
+
+    private val _status = MutableStateFlow(TorStatus.OFF)
+    val status: StateFlow<TorStatus> = _status
 
     private fun torDir(ctx: Context): File = ctx.getDir("TorService", Context.MODE_PRIVATE)
     private fun serviceDir(ctx: Context): File = File(torDir(ctx), "onion_rpc")
@@ -39,6 +48,18 @@ object TorManager {
      * @return Pair(port SOCKS, adresse .onion) ou null si Tor n'a pas démarré.
      */
     suspend fun start(ctx: Context): Pair<Int, String?>? {
+        _status.value = TorStatus.STARTING
+        val result = startInternal(ctx)
+        _status.value = if (result != null) TorStatus.ON else TorStatus.OFF
+        return result
+    }
+
+    /** Appelé toutes les 10 s par le service : repasse à « arrêté » si Tor ne répond plus. */
+    fun checkAlive() {
+        if (_status.value == TorStatus.ON && (service?.socksPort ?: 0) <= 0) _status.value = TorStatus.OFF
+    }
+
+    private suspend fun startInternal(ctx: Context): Pair<Int, String?>? {
         // Configuration du service onion : <onion>:18089 → 127.0.0.1:18089 (RPC restreint)
         TorService.getTorrc(ctx).writeText(
             "HiddenServiceDir ${serviceDir(ctx).absolutePath}\n" +
@@ -55,12 +76,17 @@ object TorManager {
                         if (s != null && cont.isActive) cont.resume(s)
                     }
 
-                    override fun onServiceDisconnected(name: ComponentName?) {}
+                    // Tor s'est arrêté de lui-même (plantage, système…) : voyant rouge
+                    override fun onServiceDisconnected(name: ComponentName?) {
+                        service = null
+                        _status.value = TorStatus.OFF
+                    }
                 }
                 connection = conn
                 ctx.bindService(Intent(ctx, TorService::class.java), conn, Context.BIND_AUTO_CREATE)
             }
         } ?: return null
+        this.service = service
 
         // Attente du proxy SOCKS (Tor connecté au réseau)
         var waited = 0
@@ -90,5 +116,7 @@ object TorManager {
             }
         }
         connection = null
+        service = null
+        _status.value = TorStatus.OFF
     }
 }

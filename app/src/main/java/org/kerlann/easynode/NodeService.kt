@@ -50,12 +50,12 @@ class NodeService : Service() {
         private const val UPDATE_CHANNEL_ID = "updates"
         private const val UPDATE_NOTIF_ID = 2
         private const val UPDATE_INTERVAL_MS = 12L * 3600 * 1000
-        /** Code de sortie quand le système tue monerod de force (128 + signal 9). */
+        /** Code de sortie quand le système tue monerod de force (128 + signal 9), par ex. pendant le minage. */
         private const val EXIT_KILLED = 137
-        /** Redémarrage automatique : 30 s d'attente, au maximum 3 fois par heure. */
-        private const val RESTART_DELAY_S = 30
-        private const val MAX_RESTARTS = 3
-        private const val RESTART_WINDOW_MS = 3600L * 1000
+        /** Redémarrage automatique : attentes de plus en plus longues si ça s'arrête encore (secondes). */
+        private val RESTART_DELAYS_S = intArrayOf(30, 60, 120, 300, 600)
+        /** Après 10 min de fonctionnement normal, on repart sur l'attente la plus courte. */
+        private const val STABLE_RUN_MS = 10L * 60 * 1000
 
         fun start(ctx: Context) {
             ContextCompat.startForegroundService(ctx, Intent(ctx, NodeService::class.java).setAction(ACTION_START))
@@ -105,28 +105,36 @@ class NodeService : Service() {
 
     // ── Exécution ───────────────────────────────────────────────────────────
 
+    /** Fin d'un démarrage de monerod qui n'a pas été demandée par l'utilisateur. */
+    private class UnexpectedStop(val message: String, val isError: Boolean)
+
     /**
-     * Fait tourner monerod. Si le téléphone le tue de force (code 137, par ex. Samsung pendant le minage),
-     * le nœud redémarre tout seul après 30 s, au maximum 3 fois par heure.
+     * Fait tourner monerod. Avec l'option « Redémarrage automatique », le nœud redémarre tout seul
+     * après tout arrêt non demandé : monerod tué par le téléphone (code 137, fréquent pendant le minage),
+     * autre erreur, coupure réseau, commande d'arrêt…
+     * Les essais s'espacent : 30 s, 1 min, 2 min, 5 min puis toutes les 10 min.
      */
     private suspend fun runNode() {
-        val restarts = ArrayDeque<Long>()
+        var attempt = 0
         try {
             while (true) {
-                val killed = runOnce()
-                if (!killed || stopping) break
-                val now = System.currentTimeMillis()
-                while (restarts.isNotEmpty() && now - restarts.first() > RESTART_WINDOW_MS) restarts.removeFirst()
-                if (restarts.size >= MAX_RESTARTS) {
-                    NodeState.fail(getString(R.string.err_killed_too_often, MAX_RESTARTS))
+                val startedAt = System.currentTimeMillis()
+                val end = runOnce() ?: break          // arrêt demandé par l'utilisateur
+                if (stopping) break
+                if (!AutoRestartStore.get(this)) {
+                    if (end.isError) NodeState.fail(end.message)
                     break
                 }
-                restarts.addLast(now)
-                NodeState.appendLog(getString(R.string.log_killed_restart, EXIT_KILLED, RESTART_DELAY_S))
+                if (System.currentTimeMillis() - startedAt > STABLE_RUN_MS) attempt = 0
+                val wait = RESTART_DELAYS_S[minOf(attempt, RESTART_DELAYS_S.size - 1)]
+                attempt++
+                NodeState.appendLog("!! ${end.message}")
+                NodeState.appendLog(getString(R.string.log_auto_restart, wait))
                 NodeState.setMining(null)
                 NodeState.setStatus(NodeStatus.STARTING)
-                updateNotification(getString(R.string.notif_restarting))
-                delay(RESTART_DELAY_S * 1000L)
+                NodeState.setError(end.message)
+                updateNotification(getString(R.string.notif_restarting, wait))
+                delay(wait * 1000L)
                 if (stopping) break
             }
         } finally {
@@ -140,8 +148,8 @@ class NodeService : Service() {
         }
     }
 
-    /** Un démarrage de monerod. Renvoie true s'il a été tué par le système (redémarrage possible). */
-    private suspend fun runOnce(): Boolean {
+    /** Un démarrage de monerod. Renvoie null si l'arrêt a été demandé, sinon la raison de l'arrêt. */
+    private suspend fun runOnce(): UnexpectedStop? {
         val s = SettingsStore.load(this)
         NodeState.setStatus(NodeStatus.STARTING)
         try {
@@ -163,7 +171,7 @@ class NodeService : Service() {
                 if (count > 0) banFile = f
             }
 
-            if (stopping) return false
+            if (stopping) return null
 
             // Tor intégré : adresse .onion pour les wallets + transactions via Tor
             var torSocks: Int? = null
@@ -175,7 +183,7 @@ class NodeService : Service() {
                 tor.second?.let { NodeState.appendLog(getString(R.string.log_tor_onion, it, TorManager.ONION_PORT)) }
             }
 
-            if (stopping) return false
+            if (stopping) return null
 
             val args = buildArgs(bin, dataDir, s, banFile, torSocks)
             val shown = args.joinToString(" ").let { line ->
@@ -222,14 +230,15 @@ class NodeService : Service() {
             withTimeoutOrNull(3_000) { reader.join() }
             process = null
 
-            if (!stopping && exit == EXIT_KILLED) return true
-            if (!stopping && exit != 0) NodeState.fail(getString(R.string.err_exit, exit))
-            return false
+            if (stopping) return null
+            // monerod s'est arrêté tout seul : tué par le téléphone (137), erreur, ou arrêt « propre » (0)
+            val msg = if (exit == EXIT_KILLED) getString(R.string.err_killed, EXIT_KILLED) else getString(R.string.err_exit, exit)
+            return UnexpectedStop(msg, isError = exit != 0)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            NodeState.fail(e.message ?: e.toString())
-            return false
+            if (stopping) return null
+            return UnexpectedStop(e.message ?: e.toString(), isError = true)
         } finally {
             // Nettoyage entre deux démarrages (Tor repart proprement au démarrage suivant)
             process = null
@@ -298,6 +307,7 @@ class NodeService : Service() {
                     }
                 }
             }
+            TorManager.checkAlive()
             val r = rpc.getInfo()
             if (r != null) {
                 val info = NodeInfo(

@@ -188,7 +188,12 @@
     <string name="mine_fast_restart">Stop and restart the node to apply this change.</string>
     <string name="mine_fast_unavailable">Not enough memory (%1$s), 8 GB minimum</string>
     <string name="log_mine_fast">Mining: fast mode (about 2.3 GB of memory)</string>
-    <string name="log_killed_restart">!! The phone stopped monerod (code %1$d). Restarting the node in %2$d s…</string>
-    <string name="err_killed_too_often">The phone stopped monerod %1$d times in one hour: the node has been stopped. Try mining with fewer cores or only while charging.</string>
-    <string name="notif_restarting">Restarting…</string>
+    <string name="tor_state_on">Tor running</string>
+    <string name="tor_state_starting">Tor connecting</string>
+    <string name="tor_state_off">Tor stopped</string>
+    <string name="err_killed">The phone stopped monerod (code %1$d).</string>
+    <string name="auto_restart">Automatic restart</string>
+    <string name="auto_restart_hint">Restarts the node by itself if it stops without you asking (stopped by the phone while mining, error, network outage…). Attempts are spaced from 30 s to 10 min.</string>
+    <string name="log_auto_restart">Automatic restart in %1$d s…</string>
+    <string name="notif_restarting">Restarting in %1$d s…</string>
 </resources>

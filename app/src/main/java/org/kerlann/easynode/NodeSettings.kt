@@ -23,6 +23,21 @@ data class NodeSettings(
         get() = 115L * 1_000_000_000
 }
 
+/**
+ * Option « Redémarrage automatique » de l'accueil (modifiable même quand le nœud tourne).
+ * Activée par défaut dans la Miner : pendant le minage, le téléphone peut tuer monerod (code 137).
+ */
+object AutoRestartStore {
+    private const val PREFS = "easynode"
+    private const val KEY = "autoRestart"
+
+    fun get(ctx: Context): Boolean = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY, true)
+
+    fun set(ctx: Context, on: Boolean) {
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY, on).apply()
+    }
+}
+
 object SettingsStore {
     private const val PREFS = "easynode"
 

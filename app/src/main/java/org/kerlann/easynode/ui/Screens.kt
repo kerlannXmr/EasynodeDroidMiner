@@ -119,6 +119,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.kerlann.easynode.AutoRestartStore
 import org.kerlann.easynode.BuildConfig
 import org.kerlann.easynode.LocaleHelper
 import org.kerlann.easynode.MiningSettings
@@ -135,6 +136,7 @@ import org.kerlann.easynode.R
 import org.kerlann.easynode.SettingsStore
 import org.kerlann.easynode.Storage
 import org.kerlann.easynode.TorManager
+import org.kerlann.easynode.TorStatus
 import org.kerlann.easynode.UpdateChecker
 import org.kerlann.easynode.CheckStatus
 import org.kerlann.easynode.UpdatePhase
@@ -368,6 +370,39 @@ private fun tryStart(ctx: Context): String? {
     return null
 }
 
+/**
+ * Voyant Tor de l'accueil : état réel de Tor (pas l'option).
+ * Vert = en marche, orange = connexion en cours, rouge = arrêté.
+ */
+@Composable
+private fun TorIndicator() {
+    val tor by TorManager.status.collectAsStateWithLifecycle()
+    val color = when (tor) {
+        TorStatus.ON -> Ok
+        TorStatus.STARTING -> XmrOrange
+        TorStatus.OFF -> Err
+    }
+    val label = stringResource(
+        when (tor) {
+            TorStatus.ON -> R.string.tor_state_on
+            TorStatus.STARTING -> R.string.tor_state_starting
+            TorStatus.OFF -> R.string.tor_state_off
+        }
+    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painterResource(R.drawable.ic_tor_onion),
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.size(20.dp),
+        )
+        Spacer(Modifier.width(4.dp))
+        Text("Tor", fontSize = 16.sp)
+        Spacer(Modifier.width(6.dp))
+        Box(Modifier.size(10.dp).background(color, CircleShape))
+    }
+}
+
 // ── Onglet Nœud ──────────────────────────────────────────────────────────────
 
 @Composable
@@ -438,6 +473,8 @@ fun NodeScreen() {
                 Box(Modifier.size(12.dp).background(statusColor, CircleShape))
                 Spacer(Modifier.width(10.dp))
                 Text(statusText, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.weight(1f))
+                TorIndicator()
             }
             Button(
                 onClick = {
@@ -452,6 +489,13 @@ fun NodeScreen() {
                 Text(stringResource(if (active) R.string.btn_stop else R.string.btn_start), fontSize = 16.sp)
             }
             error?.let { Hint(it, Err) }
+            // Redémarrage automatique, juste sous le bouton. Modifiable à tout moment :
+            // l'option est lue au moment où le nœud s'arrête.
+            var autoRestart by remember { mutableStateOf(AutoRestartStore.get(ctx)) }
+            SwitchRow(stringResource(R.string.auto_restart), stringResource(R.string.auto_restart_hint), autoRestart, true) {
+                autoRestart = it
+                AutoRestartStore.set(ctx, it)
+            }
         }
 
         if (status == NodeStatus.RUNNING) {

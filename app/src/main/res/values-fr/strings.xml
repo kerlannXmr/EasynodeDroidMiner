@@ -187,7 +187,12 @@
     <string name="mine_fast_restart">Arrête puis redémarre le nœud pour appliquer ce changement.</string>
     <string name="mine_fast_unavailable">Mémoire insuffisante (%1$s), 8 Go minimum</string>
     <string name="log_mine_fast">Minage : mode rapide (environ 2,3 Go de mémoire)</string>
-    <string name="log_killed_restart">!! Le téléphone a arrêté monerod (code %1$d). Redémarrage du nœud dans %2$d s…</string>
-    <string name="err_killed_too_often">Le téléphone a arrêté monerod %1$d fois en une heure : le nœud a été arrêté. Essaie de miner avec moins de cœurs ou seulement en charge.</string>
-    <string name="notif_restarting">Redémarrage…</string>
+    <string name="tor_state_on">Tor en marche</string>
+    <string name="tor_state_starting">Tor en cours de connexion</string>
+    <string name="tor_state_off">Tor arrêté</string>
+    <string name="err_killed">Le téléphone a arrêté monerod (code %1$d).</string>
+    <string name="auto_restart">Redémarrage automatique</string>
+    <string name="auto_restart_hint">Redémarre le nœud tout seul s’il s’arrête sans que tu l’aies demandé (arrêté par le téléphone pendant le minage, erreur, coupure réseau…). Les essais s’espacent de 30 s à 10 min.</string>
+    <string name="log_auto_restart">Redémarrage automatique dans %1$d s…</string>
+    <string name="notif_restarting">Redémarrage dans %1$d s…</string>
 </resources>
