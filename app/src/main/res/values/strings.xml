@@ -193,7 +193,7 @@
     <string name="tor_state_off">Tor stopped</string>
     <string name="err_killed">The phone stopped monerod (code %1$d).</string>
     <string name="auto_restart">Automatic restart</string>
-    <string name="auto_restart_hint">Restarts the node by itself if it stops.</string>
+    <string name="auto_restart_hint">Restarts by itself if it stops.</string>
     <string name="log_auto_restart">Automatic restart in %1$d s…</string>
     <string name="notif_restarting">Restarting in %1$d s…</string>
 </resources>
