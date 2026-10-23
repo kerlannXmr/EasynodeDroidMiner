@@ -111,7 +111,7 @@
     <string name="header_subtitle">M I N E R</string>
     <string name="link_github">Code source</string>
     <string name="link_star">⭐ Mettre une étoile</string>
-    <string name="link_star_hint">Pour mettre une étoile : touchez « Star » en haut de la page.</string>
+    <string name="link_star_hint">Touchez « Star » en haut de la page Github.</string>
     <string name="link_share">Partager l’application</string>
     <string name="share_chooser">Partager EasynodeDroid Miner</string>
     <string name="share_text">EasynodeDroid Miner : votre propre nœud Monero sur Android. Téléchargement : %1$s</string>
