@@ -192,7 +192,7 @@
     <string name="tor_state_off">Tor arrêté</string>
     <string name="err_killed">Le téléphone a arrêté monerod (code %1$d).</string>
     <string name="auto_restart">Redémarrage automatique</string>
-    <string name="auto_restart_hint">Redémarre le nœud tout seul s’il s’arrête sans que tu l’aies demandé (arrêté par le téléphone pendant le minage, erreur, coupure réseau…). Les essais s’espacent de 30 s à 10 min.</string>
+    <string name="auto_restart_hint">Redémarre le nœud tout seul s’il s’arrête. </string>
     <string name="log_auto_restart">Redémarrage automatique dans %1$d s…</string>
     <string name="notif_restarting">Redémarrage dans %1$d s…</string>
 </resources>
