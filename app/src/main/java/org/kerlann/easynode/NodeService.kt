@@ -82,17 +82,34 @@ class NodeService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_STOP -> stopNode()
-            else -> {
-                goForeground(getString(R.string.notif_starting))
-                if (job?.isActive != true) {
-                    stopping = false
-                    job = scope.launch { runNode() }
-                }
-            }
+        if (intent?.action == ACTION_STOP) {
+            NodeWantedStore.set(this, false)
+            stopNode()
+            return START_NOT_STICKY
         }
-        return START_NOT_STICKY
+        // intent == null : Android relance le service après avoir tué l'app entière (START_STICKY).
+        // On ne relance le nœud que s'il tournait et que le redémarrage automatique est activé.
+        val systemRestart = intent == null
+        if (systemRestart && !(NodeWantedStore.get(this) && AutoRestartStore.get(this))) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        try {
+            goForeground(getString(R.string.notif_starting))
+        } catch (e: Exception) {
+            // Android peut refuser de relancer un service en arrière-plan (optimisation de batterie active)
+            NodeState.fail(getString(R.string.err_bg_restart))
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        NodeWantedStore.set(this, true)
+        if (systemRestart) NodeState.appendLog(getString(R.string.log_app_restarted))
+        if (job?.isActive != true) {
+            stopping = false
+            job = scope.launch { runNode() }
+        }
+        // START_STICKY : si le téléphone tue l'app, Android relancera ce service tout seul
+        return START_STICKY
     }
 
     override fun onDestroy() {
@@ -134,6 +151,8 @@ class NodeService : Service() {
                 NodeState.setStatus(NodeStatus.STARTING)
                 NodeState.setError(end.message)
                 updateNotification(getString(R.string.notif_restarting, wait))
+                // Garde le téléphone éveillé pendant l'attente, sinon elle peut durer des heures écran éteint
+                acquireLocks()
                 delay(wait * 1000L)
                 if (stopping) break
             }
@@ -141,6 +160,8 @@ class NodeService : Service() {
             process = null
             TorManager.stop(this)
             releaseLocks()
+            // Le nœud ne tourne plus volontairement : Android ne doit pas le relancer
+            NodeWantedStore.set(this, false)
             // Après une erreur, l'état ERROR reste affiché ; sinon on passe à « Arrêté »
             if (NodeState.status.value != NodeStatus.ERROR) NodeState.setStatus(NodeStatus.STOPPED)
             ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)

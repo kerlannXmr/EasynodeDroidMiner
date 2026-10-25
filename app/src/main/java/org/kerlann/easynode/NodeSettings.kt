@@ -38,6 +38,21 @@ object AutoRestartStore {
     }
 }
 
+/**
+ * « Le nœud doit tourner » : vrai quand l'utilisateur l'a démarré, faux quand il l'arrête.
+ * Sert à savoir s'il faut relancer le nœud quand Android relance le service après avoir tué l'app.
+ */
+object NodeWantedStore {
+    private const val PREFS = "easynode"
+    private const val KEY = "nodeWanted"
+
+    fun get(ctx: Context): Boolean = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY, false)
+
+    fun set(ctx: Context, on: Boolean) {
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY, on).commit()
+    }
+}
+
 object SettingsStore {
     private const val PREFS = "easynode"
 

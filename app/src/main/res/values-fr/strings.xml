@@ -195,4 +195,6 @@
     <string name="auto_restart_hint">Redémarre tout seul s’il s’arrête. </string>
     <string name="log_auto_restart">Redémarrage automatique dans %1$d s…</string>
     <string name="notif_restarting">Redémarrage dans %1$d s…</string>
+    <string name="log_app_restarted">!! Le téléphone a fermé l’app : le nœud redémarre (redémarrage automatique).</string>
+    <string name="err_bg_restart">Android a refusé de relancer le nœud en arrière-plan. Désactive l’optimisation de batterie pour l’app (onglet Réglages).</string>
 </resources>

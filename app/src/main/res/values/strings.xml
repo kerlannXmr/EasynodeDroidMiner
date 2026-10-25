@@ -196,4 +196,6 @@
     <string name="auto_restart_hint">Restarts by itself if it stops.</string>
     <string name="log_auto_restart">Automatic restart in %1$d s…</string>
     <string name="notif_restarting">Restarting in %1$d s…</string>
+    <string name="log_app_restarted">!! The phone closed the app: the node is restarting (automatic restart).</string>
+    <string name="err_bg_restart">Android refused to restart the node in the background. Disable battery optimization for the app (Settings tab).</string>
 </resources>
