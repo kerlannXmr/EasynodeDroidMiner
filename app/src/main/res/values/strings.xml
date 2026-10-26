@@ -204,8 +204,8 @@
     <string name="perm_notif_hint">To see the node status.</string>
     <string name="perm_battery">Battery</string>
     <string name="perm_battery_hint">So that the node is not stopped.</string>
-    <string name="perm_install">Updates</string>
-    <string name="perm_install_hint">For automatic updates.</string>
+    <string name="perm_install">Unknown sources</string>
+    <string name="perm_install_hint">For not play store update.</string>
     <string name="perm_autoblocker">Samsung Auto Blocker</string>
     <string name="perm_autoblocker_hint">May block updates.</string>
     <string name="perm_autoblocker_note">Auto Blocker protects the phone against apps installed outside the Play Store. You can turn it back on after an update.</string>
