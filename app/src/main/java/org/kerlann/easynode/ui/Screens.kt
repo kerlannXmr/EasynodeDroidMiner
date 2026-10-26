@@ -759,8 +759,7 @@ fun SettingsScreen() {
         Section(stringResource(R.string.set_language)) {
             val current = remember { LocaleHelper.get(ctx) }
             listOf(
-                LocaleHelper.SYSTEM to stringResource(R.string.lang_system),
-                "fr" to "Français",
+                LocaleHelper.SYSTEM to stringResource(R.string.lang_system),                
                 "en" to "English",
             ).forEach { (code, label) ->
                 RadioRow(label, current == code, true) {
