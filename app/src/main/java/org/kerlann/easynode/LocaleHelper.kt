@@ -12,7 +12,7 @@ object LocaleHelper {
     const val SYSTEM = "system"
 
     fun get(ctx: Context): String =
-        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, SYSTEM) ?: SYSTEM
+        SYSTEM
 
     fun set(ctx: Context, lang: String) {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, lang).commit()
