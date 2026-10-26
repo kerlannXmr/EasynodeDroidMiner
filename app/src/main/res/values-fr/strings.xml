@@ -32,9 +32,7 @@
     <string name="err_no_binary">monerod est absent de cet APK (build incomplet).</string>
     <string name="err_exit">monerod s’est arrêté (code %1$d). Voir l’onglet Journal.</string>
     <string name="err_not_writable">Dossier non accessible en écriture : %1$s</string>
-
-    <string name="set_language">Langue</string>
-    <string name="lang_system">Langue du téléphone</string>
+    
     <string name="settings_running_hint">Arrêtez le nœud pour modifier les réglages.</string>
     <string name="type_pruned">Élaguée (~115 Go)</string>
     <string name="set_storage">Emplacement de stockage</string>
