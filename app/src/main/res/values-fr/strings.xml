@@ -203,8 +203,8 @@
     <string name="perm_notif_hint">Pour voir l’état du nœud.</string>
     <string name="perm_battery">Batterie</string>
     <string name="perm_battery_hint">Pour que le nœud ne soit pas arrêté.</string>
-    <string name="perm_install">Mises à jour</string>
-    <string name="perm_install_hint">Pour les mises à jour automatiques.</string>
+    <string name="perm_install">Sources Inconnues</string>
+    <string name="perm_install_hint">Pour les mises à jour hors play store.</string>
     <string name="perm_autoblocker">Bloqueur Samsung</string>
     <string name="perm_autoblocker_hint">Peut bloquer les mises à jour.</string>
     <string name="perm_autoblocker_note">Le Bloqueur automatique protège le téléphone contre les apps installées hors Play Store. Tu peux le réactiver après une mise à jour.</string>
