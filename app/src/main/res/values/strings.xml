@@ -206,9 +206,9 @@
     <string name="perm_battery_hint">So that the node is not stopped.</string>
     <string name="perm_install">Unknown sources</string>
     <string name="perm_install_hint">For not play store update.</string>
-    <string name="perm_autoblocker">Samsung Auto Blocker</string>
-    <string name="perm_autoblocker_hint">May block updates.</string>
-    <string name="perm_autoblocker_note">Auto Blocker protects the phone against apps installed outside the Play Store. You can turn it back on after an update.</string>
+    <string name="perm_autoblocker">Auto Blocker</string>
+    <string name="perm_autoblocker_hint">May block updates .</string>
+    <string name="perm_autoblocker_note">(Android 16 and after)</string>
     <string name="perm_missing_one">1 permission is missing</string>
     <string name="perm_missing_many">%1$d permissions are missing</string>
     <string name="perm_missing_hint">Without them, the phone may stop the node and block updates.</string>
