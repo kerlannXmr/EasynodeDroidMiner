@@ -207,8 +207,8 @@
     <string name="perm_install">Unknown sources</string>
     <string name="perm_install_hint">For not play store update.</string>
     <string name="perm_autoblocker">Auto Blocker</string>
-    <string name="perm_autoblocker_hint">May block updates .</string>
-    <string name="perm_autoblocker_note">(Android 16 and after)</string>
+    <string name="perm_autoblocker_hint">May block updates(Android 16+)</string>
+    <string name="perm_autoblocker_note"></string>
     <string name="perm_missing_one">1 permission is missing</string>
     <string name="perm_missing_many">%1$d permissions are missing</string>
     <string name="perm_missing_hint">Without them, the phone may stop the node and block updates.</string>
