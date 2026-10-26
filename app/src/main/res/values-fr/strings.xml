@@ -207,7 +207,7 @@
     <string name="perm_install_hint">Pour les mises à jour hors play store.</string>
     <string name="perm_autoblocker">Bloqueur Samsung</string>
     <string name="perm_autoblocker_hint">Peut bloquer les mises à jour.</string>
-    <string name="perm_autoblocker_note">Le Bloqueur automatique protège le téléphone contre les apps installées hors Play Store. Tu peux le réactiver après une mise à jour.</string>
+    <string name="perm_autoblocker_note">Android 16 et +.</string>
     <string name="perm_missing_one">Il manque 1 autorisation</string>
     <string name="perm_missing_many">Il manque %1$d autorisations</string>
     <string name="perm_missing_hint">Sans elles, le téléphone peut arrêter le nœud et bloquer les mises à jour.</string>
