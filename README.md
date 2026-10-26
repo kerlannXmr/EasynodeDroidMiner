@@ -107,7 +107,7 @@ EasynodeDroid Miner installs **next to** EasynodeDroid (it does not replace it).
 ### First launch
 
 1. Allow notifications.
-2. In **Settings**, tap **Disable battery optimization** and accept.
+2. In **Settings › Permissions**, tap **Allow** on each red line (notifications, battery, updates) and accept what Android asks. On Samsung phones, the **Auto Blocker** line opens *Security and privacy*: turn Auto Blocker off if updates are blocked.
 3. Choose the storage location (internal storage or SD card).
 4. Plug in the phone, connect to Wi-Fi, go to the **Node** tab and tap **Start node**.
 
@@ -241,7 +241,7 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 - Look at the **Log** tab for the exact error.
 
 **The node stops when the screen is off**
-- Disable battery optimization in **Settings**, or in *Android Settings › Apps › EasynodeDroid Miner › Battery › Unrestricted*.
+- Allow **Battery** in **Settings › Permissions**, or set *Android Settings › Apps › EasynodeDroid Miner › Battery › Unrestricted*.
 
 **The app closes when mining starts**
 - Turn **Fast mode** off: the phone does not have enough free memory for it. Light mode works on every phone.
@@ -249,6 +249,9 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 **Mining does not start**
 - The node must be synchronized first, and the address must be a **main address** starting with `4`.
 - With **Only while charging** on, plug the phone in. The status line in the Mining tab (and the Log tab) shows why mining is paused.
+
+**The update does not install (Samsung)**
+- *Auto Blocker* blocks apps installed outside the Play Store, including updates. The app shows a button to open *Security and privacy*: turn Auto Blocker off, install the update, then turn it back on if you want.
 
 **Sync is slow**
 - The first sync is long by nature. Keep the phone plugged in, on Wi-Fi, and prefer internal storage or a fast (A2 / U3) SD card.

@@ -53,8 +53,6 @@
     <string name="set_tor_hint">Tor est intégré à l’application (Orbot n’est pas nécessaire). Donne à votre nœud une adresse .onion pour les wallets et diffuse vos transactions via Tor. Le démarrage prend jusqu’à une minute de plus.</string>
     <string name="set_metered">Autoriser les données mobiles</string>
     <string name="set_metered_hint">La synchronisation télécharge des dizaines de Go.</string>
-    <string name="set_battery">Désactiver l’optimisation de batterie</string>
-    <string name="set_battery_hint">Évite qu’Android arrête le nœud quand l’écran est éteint.</string>
     <string name="set_delete"> ⚠ Supprimer la blockchain ⚠ </string>
     <string name="delete_confirm_title">Supprimer la blockchain ?</string>
     <string name="delete_confirm_text">Le dossier %1$s sera effacé. Il faudra tout resynchroniser.</string>
@@ -196,5 +194,24 @@
     <string name="log_auto_restart">Redémarrage automatique dans %1$d s…</string>
     <string name="notif_restarting">Redémarrage dans %1$d s…</string>
     <string name="log_app_restarted">!! Le téléphone a fermé l’app : le nœud redémarre (redémarrage automatique).</string>
-    <string name="err_bg_restart">Android a refusé de relancer le nœud en arrière-plan. Désactive l’optimisation de batterie pour l’app (onglet Réglages).</string>
+    <string name="err_bg_restart">Android a refusé de relancer le nœud en arrière-plan. Autorise « Batterie » dans Réglages › Autorisations.</string>
+    <string name="perm_title">Autorisations</string>
+    <string name="perm_granted">Accordée</string>
+    <string name="perm_allow">Autoriser</string>
+    <string name="perm_open">Ouvrir</string>
+    <string name="perm_notif">Notifications</string>
+    <string name="perm_notif_hint">Pour voir l’état du nœud.</string>
+    <string name="perm_battery">Batterie</string>
+    <string name="perm_battery_hint">Pour que le nœud ne soit pas arrêté.</string>
+    <string name="perm_install">Mises à jour</string>
+    <string name="perm_install_hint">Pour les mises à jour automatiques.</string>
+    <string name="perm_autoblocker">Bloqueur Samsung</string>
+    <string name="perm_autoblocker_hint">Peut bloquer les mises à jour.</string>
+    <string name="perm_autoblocker_note">Le Bloqueur automatique protège le téléphone contre les apps installées hors Play Store. Tu peux le réactiver après une mise à jour.</string>
+    <string name="perm_missing_one">Il manque 1 autorisation</string>
+    <string name="perm_missing_many">Il manque %1$d autorisations</string>
+    <string name="perm_missing_hint">Sans elles, le téléphone peut arrêter le nœud et bloquer les mises à jour.</string>
+    <string name="perm_see">Voir les autorisations</string>
+    <string name="upd_blocked_samsung">La mise à jour est bloquée par le Bloqueur automatique de Samsung. Désactive-le dans Sécurité et confidentialité, puis réessaie.</string>
+    <string name="upd_open_security">Ouvrir les réglages de sécurité</string>
 </resources>

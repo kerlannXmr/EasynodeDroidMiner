@@ -55,8 +55,6 @@
     <string name="set_tor_hint">Tor is built into the app (Orbot not needed). Gives your node an .onion address for wallets and broadcasts your transactions through Tor. Start takes up to a minute longer.</string>
     <string name="set_metered">Allow mobile data</string>
     <string name="set_metered_hint">The sync downloads tens of GB.</string>
-    <string name="set_battery">Disable battery optimization</string>
-    <string name="set_battery_hint">Prevents Android from killing the node when the screen is off.</string>
     <string name="set_delete"> ⚠ Delete blockchain ⚠ </string>
     <string name="delete_confirm_title">Delete the blockchain?</string>
     <string name="delete_confirm_text">The folder %1$s will be erased. A full resync will be needed.</string>
@@ -197,5 +195,24 @@
     <string name="log_auto_restart">Automatic restart in %1$d s…</string>
     <string name="notif_restarting">Restarting in %1$d s…</string>
     <string name="log_app_restarted">!! The phone closed the app: the node is restarting (automatic restart).</string>
-    <string name="err_bg_restart">Android refused to restart the node in the background. Disable battery optimization for the app (Settings tab).</string>
+    <string name="err_bg_restart">Android refused to restart the node in the background. Allow Battery in Settings › Permissions.</string>
+    <string name="perm_title">Permissions</string>
+    <string name="perm_granted">Granted</string>
+    <string name="perm_allow">Allow</string>
+    <string name="perm_open">Open</string>
+    <string name="perm_notif">Notifications</string>
+    <string name="perm_notif_hint">To see the node status.</string>
+    <string name="perm_battery">Battery</string>
+    <string name="perm_battery_hint">So that the node is not stopped.</string>
+    <string name="perm_install">Updates</string>
+    <string name="perm_install_hint">For automatic updates.</string>
+    <string name="perm_autoblocker">Samsung Auto Blocker</string>
+    <string name="perm_autoblocker_hint">May block updates.</string>
+    <string name="perm_autoblocker_note">Auto Blocker protects the phone against apps installed outside the Play Store. You can turn it back on after an update.</string>
+    <string name="perm_missing_one">1 permission is missing</string>
+    <string name="perm_missing_many">%1$d permissions are missing</string>
+    <string name="perm_missing_hint">Without them, the phone may stop the node and block updates.</string>
+    <string name="perm_see">See permissions</string>
+    <string name="upd_blocked_samsung">The update is blocked by Samsung’s Auto Blocker. Turn it off in Security and privacy, then try again.</string>
+    <string name="upd_open_security">Open security settings</string>
 </resources>

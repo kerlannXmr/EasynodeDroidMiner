@@ -88,6 +88,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.LaunchedEffect
@@ -135,6 +137,7 @@ import org.kerlann.easynode.NodeStatus
 import org.kerlann.easynode.R
 import org.kerlann.easynode.SettingsStore
 import org.kerlann.easynode.Storage
+import org.kerlann.easynode.Permissions
 import org.kerlann.easynode.TorManager
 import org.kerlann.easynode.TorStatus
 import org.kerlann.easynode.UpdateChecker
@@ -180,7 +183,7 @@ fun EasyNodeApp() {
         ) { page ->
             Box(Modifier.fillMaxSize()) {
                 when (page) {
-                    0 -> NodeScreen()
+                    0 -> NodeScreen(onOpenSettings = { scope.launch { pagerState.animateScrollToPage(1) } })
                     1 -> SettingsScreen()
                     2 -> MiningScreen()
                     3 -> LogScreen()
@@ -406,8 +409,12 @@ private fun TorIndicator() {
 // ── Onglet Nœud ──────────────────────────────────────────────────────────────
 
 @Composable
-fun NodeScreen() {
+fun NodeScreen(onOpenSettings: () -> Unit = {}) {
     val ctx = LocalContext.current
+    // Autorisations manquantes : recalculées à chaque retour dans l'app
+    var permTick by remember { mutableIntStateOf(0) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { permTick++ }
+    val missingPerms = remember(permTick) { Permissions.missing(ctx) }
     val status by NodeState.status.collectAsStateWithLifecycle()
     val info by NodeState.info.collectAsStateWithLifecycle()
     val error by NodeState.error.collectAsStateWithLifecycle()
@@ -456,7 +463,17 @@ fun NodeScreen() {
                     UpdatePhase.WAITING_USER -> Hint(updState.message ?: "", Warn)
                     UpdatePhase.ERROR, UpdatePhase.IDLE -> {
                         Hint(stringResource(R.string.update_hint))
-                        updState.message?.let { Hint(it, Err) }
+                        val msg = updState.message
+                        if (Permissions.isAutoBlockerError(msg)) {
+                            // Installation bloquée par le Bloqueur automatique de Samsung
+                            Hint(stringResource(R.string.upd_blocked_samsung), Err)
+                            OutlinedButton(
+                                onClick = { Permissions.openSecurity(ctx) },
+                                modifier = Modifier.fillMaxWidth(),
+                            ) { Text(stringResource(R.string.upd_open_security)) }
+                        } else {
+                            msg?.let { Hint(it, Err) }
+                        }
                     }
                 }
                 if (!Updater.busy) {
@@ -464,6 +481,24 @@ fun NodeScreen() {
                         onClick = { Updater.start(ctx, u, interactive = true) },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text(stringResource(R.string.update_install)) }
+                }
+            }
+        }
+
+        if (missingPerms > 0) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                border = BorderStroke(1.dp, Warn),
+            ) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(
+                        if (missingPerms == 1) stringResource(R.string.perm_missing_one)
+                        else stringResource(R.string.perm_missing_many, missingPerms),
+                        color = Warn, fontWeight = FontWeight.SemiBold,
+                    )
+                    Hint(stringResource(R.string.perm_missing_hint), MaterialTheme.colorScheme.onSurfaceVariant)
+                    OutlinedButton(onClick = onOpenSettings) { Text(stringResource(R.string.perm_see)) }
                 }
             }
         }
@@ -642,6 +677,71 @@ private fun VersionRow(label: String, value: String) {
     }
 }
 
+/** Ligne du cadre « Autorisations » : voyant, titre, explication, bouton ou « Accordée ». */
+@Composable
+private fun PermissionRow(title: String, hint: String, granted: Boolean?, button: String, onClick: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            Modifier.size(10.dp).background(
+                when (granted) {
+                    true -> Ok
+                    false -> Err
+                    null -> Muted   // inconnu (Bloqueur Samsung)
+                },
+                CircleShape,
+            )
+        )
+        Spacer(Modifier.width(10.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title)
+            Hint(hint)
+        }
+        Spacer(Modifier.width(8.dp))
+        if (granted == true) Text(stringResource(R.string.perm_granted), color = Ok, fontSize = 14.sp)
+        else OutlinedButton(onClick = onClick, contentPadding = PaddingValues(horizontal = 14.dp)) { Text(button) }
+    }
+}
+
+/** Cadre « Autorisations » : l'app ouvre les fenêtres Android, l'utilisateur accorde. */
+@Composable
+private fun PermissionsCard() {
+    val ctx = LocalContext.current
+    var tick by remember { mutableIntStateOf(0) }
+    // Les voyants se mettent à jour au retour dans l'app (après avoir autorisé dans Android)
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { tick++ }
+    val notif = remember(tick) { Permissions.notifications(ctx) }
+    val battery = remember(tick) { Permissions.battery(ctx) }
+    val install = remember(tick) { Permissions.install(ctx) }
+    val notifLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok ->
+        // Refus définitif : Android n'affiche plus la fenêtre, on ouvre les réglages de notifications
+        if (!ok) Permissions.openNotificationSettings(ctx)
+        tick++
+    }
+    val allow = stringResource(R.string.perm_allow)
+    Section(stringResource(R.string.perm_title)) {
+        PermissionRow(stringResource(R.string.perm_notif), stringResource(R.string.perm_notif_hint), notif, allow) {
+            if (Build.VERSION.SDK_INT >= 33) notifLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            else Permissions.openNotificationSettings(ctx)
+        }
+        HorizontalDivider()
+        PermissionRow(stringResource(R.string.perm_battery), stringResource(R.string.perm_battery_hint), battery, allow) {
+            Permissions.requestBattery(ctx)
+        }
+        HorizontalDivider()
+        PermissionRow(stringResource(R.string.perm_install), stringResource(R.string.perm_install_hint), install, allow) {
+            Permissions.requestInstall(ctx)
+        }
+        if (Permissions.isSamsung) {
+            HorizontalDivider()
+            PermissionRow(
+                stringResource(R.string.perm_autoblocker), stringResource(R.string.perm_autoblocker_hint),
+                null, stringResource(R.string.perm_open),
+            ) { Permissions.openSecurity(ctx) }
+            Hint(stringResource(R.string.perm_autoblocker_note))
+        }
+    }
+}
+
 @Composable
 fun SettingsScreen() {
     val ctx = LocalContext.current
@@ -654,6 +754,8 @@ fun SettingsScreen() {
     var confirmDelete by remember { mutableStateOf(false) }
 
     ScreenColumn {
+        PermissionsCard()
+
         Section(stringResource(R.string.set_language)) {
             val current = remember { LocaleHelper.get(ctx) }
             listOf(
@@ -735,19 +837,6 @@ fun SettingsScreen() {
                 SwitchRow(stringResource(R.string.set_auto_update), stringResource(R.string.set_auto_update_hint), s.autoInstall, true) {
                     update(s.copy(autoInstall = it))
                 }
-            }
-            val pm = ctx.getSystemService(PowerManager::class.java)
-            if (!pm.isIgnoringBatteryOptimizations(ctx.packageName)) {
-                HorizontalDivider()
-                Hint(stringResource(R.string.set_battery_hint))
-                OutlinedButton(
-                    onClick = {
-                        ctx.startActivity(
-                            Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${ctx.packageName}"))
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(R.string.set_battery)) }
             }
         }
 
