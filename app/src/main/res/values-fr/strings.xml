@@ -50,7 +50,7 @@
     <string name="set_rpc_pass">Mot de passe (6 caractères min.)</string>
     <string name="warn_lan_no_login">RPC ouvert sans mot de passe : tout appareil du réseau peut l’utiliser.</string>
     <string name="set_tor">Tor : adresse .onion + transactions via Tor</string>
-    <string name="set_tor_hint">Tor est intégré à l’application (Orbot n’est pas nécessaire). Donne à votre nœud une adresse .onion pour les wallets et diffuse vos transactions via Tor. Le démarrage prend jusqu’à une minute de plus.</string>
+    <string name="set_tor_hint">Tor est intégré à l’application (Orbot n’est pas nécessaire). Donne à votre nœud une adresse .onion pour les wallets et diffuse vos transactions via Tor</string>
     <string name="set_metered">Autoriser les données mobiles</string>
     <string name="set_metered_hint">La synchronisation télécharge des dizaines de Go.</string>
     <string name="set_delete"> ⚠ Supprimer la blockchain ⚠ </string>
@@ -91,7 +91,7 @@
     <string name="update_notif_channel">Mises à jour</string>
     <string name="update_notif_title">Mise à jour d’EasynodeDroid Miner disponible</string>
     <string name="set_updates">Vérifier les mises à jour</string>
-    <string name="set_updates_hint">Interroge GitHub à l’ouverture de l’app et toutes les 12 h quand le nœud tourne. GitHub voit votre adresse IP.</string>
+    <string name="set_updates_hint">A l’ouverture de l’app et toutes les 12h</string>
     <string name="update_hint">Le nœud est arrêté pendant la mise à jour puis redémarré. La blockchain est conservée.</string>
     <string name="update_install">Installer la mise à jour</string>
     <string name="upd_downloading">Téléchargement… %1$s</string>
