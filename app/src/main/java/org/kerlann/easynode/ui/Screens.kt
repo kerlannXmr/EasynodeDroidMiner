@@ -754,22 +754,7 @@ fun SettingsScreen() {
     var confirmDelete by remember { mutableStateOf(false) }
 
     ScreenColumn {
-        PermissionsCard()
-
-        Section(stringResource(R.string.set_language)) {
-            val current = remember { LocaleHelper.get(ctx) }
-            listOf(
-                LocaleHelper.SYSTEM to stringResource(R.string.lang_system),                
-                "en" to "English",
-            ).forEach { (code, label) ->
-                RadioRow(label, current == code, true) {
-                    if (code != current) {
-                        LocaleHelper.set(ctx, code)
-                        (ctx as? Activity)?.recreate()
-                    }
-                }
-            }
-        }
+        PermissionsCard()        
 
         if (!editable) Hint(stringResource(R.string.settings_running_hint), Warn)
 
