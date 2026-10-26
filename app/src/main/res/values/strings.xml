@@ -34,9 +34,7 @@
     <string name="err_no_binary">monerod is missing from this APK (incomplete build).</string>
     <string name="err_exit">monerod stopped (exit code %1$d). See the Log tab.</string>
     <string name="err_not_writable">Folder not writable: %1$s</string>
-
-    <string name="set_language">Language</string>
-    <string name="lang_system">Phone language</string>
+    
     <string name="settings_running_hint">Stop the node to change settings.</string>
     <string name="type_pruned">Pruned (~115 GB)</string>
     <string name="set_storage">Storage location</string>
