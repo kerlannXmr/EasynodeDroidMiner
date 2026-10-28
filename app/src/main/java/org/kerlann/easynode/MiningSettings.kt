@@ -11,7 +11,7 @@ data class MiningSettings(
     val enabled: Boolean = false,
     val address: String = "",
     val threads: Int = 1,
-    val onlyCharging: Boolean = true,
+    val onlyCharging: Boolean = false,
     val pauseHot: Boolean = true,
     /** Mode rapide de RandomX (≈ 2,3 Go de mémoire) : seulement sur les téléphones avec assez de mémoire. */
     val fastMode: Boolean = false,

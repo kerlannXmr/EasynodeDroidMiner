@@ -79,6 +79,12 @@ class NodeService : Service() {
         super.attachBaseContext(LocaleHelper.wrap(newBase))
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        // Journal enregistré dans un fichier (aussi quand Android relance le service tout seul)
+        NodeState.init(this)
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

@@ -6,11 +6,11 @@ import android.content.Context
 data class NodeSettings(
     val storageIndex: Int = 0,
     val useBanList: Boolean = true,
-    val rpcLan: Boolean = false,
+    val rpcLan: Boolean = true,
     val rpcLogin: Boolean = false,
     val rpcUser: String = "easynode",
     val rpcPassword: String = "",
-    val torTx: Boolean = false,
+    val torTx: Boolean = true,
     val allowMetered: Boolean = false,
     val checkUpdates: Boolean = true,
     val autoInstall: Boolean = true,
