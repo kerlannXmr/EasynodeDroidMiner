@@ -7,6 +7,11 @@ plugins {
 // Signature release : fournie par la CI (secrets GitHub) sinon clé de debug.
 val keystoreFile: String? = System.getenv("KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
 
+// Kotlin 2.2 : version alignée sur celle qu'apporte tor-android 0.4.9 (sinon le compilateur ne la lit pas)
+kotlin {
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
+}
+
 android {
     namespace = "org.kerlann.easynode"
     compileSdk = 35
@@ -50,7 +55,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = "17" }
 
     buildFeatures {
         compose = true
