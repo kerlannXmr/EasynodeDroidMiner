@@ -9,7 +9,7 @@ val keystoreFile: String? = System.getenv("KEYSTORE_FILE")?.takeIf { it.isNotBla
 
 android {
     namespace = "org.kerlann.easynode"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.kerlann.easynode.miner"
