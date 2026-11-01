@@ -43,12 +43,16 @@
 - **Pruned blockchain** – about 115 GB instead of 250 GB, while still verifying every block.
 - **Verified binary** – each release embeds the official `monerod` for Android ARM64, checked against the **GPG-signed** `hashes.txt` of the Monero Project (SHA-256) before the APK is built.
 - **One-tap start / stop** – runs as a foreground service, with sync progress, height and peers in a notification.
-- **Built-in Tor** – no Orbot needed. Gives your node a **.onion address** for your wallets and broadcasts your transactions over Tor.
+- **Built-in Tor** (Tor 0.4.9.x) – no Orbot needed. Gives your node a **.onion address** for your wallets and broadcasts your transactions over Tor.
 - **Spy-node protection** – loads the community [IP ban list](https://github.com/Boog900/monero-ban-list) at every start.
 - **Wallet-ready RPC** – local, local network (restricted RPC) or Tor, with optional login and password.
 - **Internal storage or SD card** – choose where the blockchain lives.
 - **In-app updates** – the app checks for new versions, verifies that the new APK is signed with the same key, stops the node cleanly, updates itself and restarts the node.
-- **English / French** – follows the phone language or can be chosen in the app.
+- **English / French** – follows the phone language (English for other languages).
+- **Automatic restart** – if the node stops without you asking (error, the phone closing the app…), it restarts by itself. The switch is on the home screen, on by default.
+- **Tor status light** – a green / orange / red light on the home screen shows whether Tor is really running, connecting or stopped.
+- **Saved log** – the **Log** tab is also saved to a file, so you can still see what happened after the app was restarted.
+- **Permissions in one place** – **Settings › Permissions** shows what is allowed and opens the right Android screen for what is missing.
 - **Solo mining** – a **Mining** tab uses the miner built into `monerod` (no extra program to download): choose your payout address and the number of cores, see the speed (H/s), blocks found and your estimated chance.
 - **Phone-friendly mining** – light mode by default (about 256 MB of memory), optional **fast mode** on phones with 8 GB of memory or more, automatic pause on battery or when the phone gets too hot (60 °C).
 
@@ -115,7 +119,9 @@ EasynodeDroid Miner installs **next to** EasynodeDroid (it does not replace it).
 
 The **Node** tab shows the status, sync progress, height, peers (in / out), database size and storage. The node keeps running when the app is closed; the notification shows its progress and has a **Stop** button.
 
-The **Log** tab shows the live output of `monerod`.
+Next to the status, the **Tor** light shows the real state of Tor: green = running, orange = connecting, red = stopped. Under the button, **Automatic restart** restarts the node by itself after any stop you did not ask for (attempts are spaced from 30 s to 10 min).
+
+The **Log** tab shows the live output of `monerod` and of the app. It is also saved to a file, so it is kept when the app restarts (a line `===== … · app started =====` marks each start).
 
 ### Stopping the node
 
@@ -153,7 +159,7 @@ Mining starts and stops on its own: it waits for the node to be synchronized, pa
 | Fast mode | 5 to 10 times faster, but uses about 2.3 GB of memory. Only offered on phones with **8 GB of memory or more**. Restart the node to apply it | Off |
 | Payout address | Main address of your wallet (starts with `4`) | – |
 | Cores | Number of CPU cores used for mining | 1 |
-| Only while charging | Pauses mining when the phone runs on battery | On |
+| Only while charging | Pauses mining when the phone runs on battery | Off |
 | Pause if the phone gets hot | Pauses mining from 60 °C (battery temperature) or if Android reports a severe overheating, and resumes as soon as it cools down | On |
 
 ### Light mode and fast mode
@@ -193,7 +199,7 @@ If **RPC authentication** is enabled, enter the same username and password in th
 
 ## Tor
 
-Tor is **built into the app** (based on the Guardian Project's [tor-android](https://github.com/guardianproject/tor-android)); Orbot is not required.
+Tor is **built into the app** (based on the Guardian Project's [tor-android](https://github.com/guardianproject/tor-android), **Tor 0.4.9.x**, the series required by the Tor network since Tor 0.4.8 reached end of life); Orbot is not required. Tor is **on by default**; the light next to the node status shows whether it is really running.
 
 When the **Tor** option is enabled:
 
@@ -212,15 +218,15 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 
 | Setting | Description | Default |
 |---|---|---|
-| Language | Phone language, Français or English | Phone language |
 | Storage location | Internal storage or SD card | Internal storage |
-| Open RPC to the local network | Lets other devices on your Wi-Fi use the node (restricted RPC) | Off |
+| Open RPC to the local network | Lets other devices on your Wi-Fi use the node (restricted RPC) | On |
 | RPC authentication | Username / password required to use the RPC | Off |
 | Block spy nodes | Loads the IP ban list at each start | On |
-| Tor | .onion address + transactions via Tor | Off |
+| Tor | .onion address + transactions via Tor | On |
 | Allow mobile data | Allow starting on a metered connection | Off |
 | Check for updates | Ask GitHub for new versions | On |
 | Install updates automatically | Update in the background while the node runs | On |
+| Automatic restart (home screen) | Restarts the node after any stop you did not ask for | On |
 
 ### Network ports
 
@@ -265,6 +271,7 @@ Good to know: a .onion connection goes through 6 Tor relays, so it is naturally 
 
 - Full RPC listens on `127.0.0.1` only. Other devices (local network or .onion) only get **restricted RPC**, on port 18089.
 - The .onion address only gives access to restricted RPC.
+- **Open RPC to the local network** is on by default: on a public or shared Wi-Fi, turn it off or enable **RPC authentication**.
 - The app holds **no wallet and no keys**: it only runs the node. For mining, it only needs your **public** address.
 - `monerod` is the official binary, verified with the Monero Project's GPG signatures at build time.
 - Updates are only installed if the new APK is signed with the same key as the installed app.
