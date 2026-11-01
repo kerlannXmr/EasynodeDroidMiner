@@ -62,7 +62,7 @@ object TorManager {
     private suspend fun startInternal(ctx: Context): Pair<Int, String?>? {
         // tor-android garde le port SOCKS d'un démarrage précédent dans une variable statique :
         // on la remet à zéro, sinon on croirait Tor prêt alors qu'il ne l'est pas encore.
-        TorService.socksPort = -1
+        resetSocksPort()
         // Configuration du service onion : <onion>:18089 → 127.0.0.1:18089 (RPC restreint)
         TorService.getTorrc(ctx).writeText(
             "HiddenServiceDir ${serviceDir(ctx).absolutePath}\n" +
@@ -120,7 +120,18 @@ object TorManager {
         }
         connection = null
         service = null
-        TorService.socksPort = -1
+        resetSocksPort()
         _status.value = TorStatus.OFF
+    }
+
+    /**
+     * Remet à -1 la variable statique « socksPort » de TorService.
+     * Depuis tor-android 0.4.9.9 elle est privée : on y accède par réflexion (sans risque si ça échoue).
+     */
+    private fun resetSocksPort() {
+        try {
+            TorService::class.java.getDeclaredField("socksPort").apply { isAccessible = true }.setInt(null, -1)
+        } catch (_: Exception) {
+        }
     }
 }

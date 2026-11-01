@@ -87,10 +87,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // Tor intégré (adresse .onion + proxy SOCKS)
-    implementation("info.guardianproject:tor-android:0.4.9.8")
+    implementation("info.guardianproject:tor-android:0.4.9.14")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 }
-    // tor-android 0.4.9 demande compileSdk 37 : vérification désactivée en attendant la mise à jour des outils.
+
+// tor-android 0.4.9 est fabriqué pour Android 17 (API 37) et demande donc compileSdk 37.
+// L'app n'utilise de Tor que des fonctions qui existaient déjà (démarrage, port SOCKS, adresse .onion) :
+// on désactive seulement cette vérification. À retirer lors du passage au plugin Android 9 + compileSdk 37.
 tasks.configureEach {
     if (name.startsWith("check") && name.endsWith("AarMetadata")) enabled = false
 }
