@@ -1,20 +1,20 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    // Kotlin est intégré au plugin Android 9 : pas de plugin « kotlin-android »
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
 // Signature release : fournie par la CI (secrets GitHub) sinon clé de debug.
 val keystoreFile: String? = System.getenv("KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
 
-// Kotlin 2.2 : version alignée sur celle qu'apporte tor-android 0.4.9 (sinon le compilateur ne la lit pas)
-kotlin {
-    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
-}
-
 android {
     namespace = "org.kerlann.easynode"
-    compileSdk = 35
+    // Android 17 (API 37.1), exigé par tor-android 0.4.9 ; targetSdk reste à 35
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "org.kerlann.easynode.miner"
@@ -43,7 +43,7 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = if (keystoreFile != null) signingConfigs.getByName("release")
@@ -89,11 +89,4 @@ dependencies {
     // Tor intégré (adresse .onion + proxy SOCKS)
     implementation("info.guardianproject:tor-android:0.4.9.14")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
-}
-
-// tor-android 0.4.9 est fabriqué pour Android 17 (API 37) et demande donc compileSdk 37.
-// L'app n'utilise de Tor que des fonctions qui existaient déjà (démarrage, port SOCKS, adresse .onion) :
-// on désactive seulement cette vérification. À retirer lors du passage au plugin Android 9 + compileSdk 37.
-tasks.configureEach {
-    if (name.startsWith("check") && name.endsWith("AarMetadata")) enabled = false
 }
