@@ -213,4 +213,11 @@
     <string name="perm_see">See permissions</string>
     <string name="upd_blocked_samsung">The update is blocked by Samsung’s Auto Blocker. Turn it off in Security and privacy, then try again.</string>
     <string name="upd_open_security">Open security settings</string>
+    <string name="tor_new_onion">New .onion address</string>
+    <string name="tor_new_onion_running">Stop the node to change the address.</string>
+    <string name="tor_new_onion_title">New .onion address?</string>
+    <string name="tor_new_onion_text">The current address will stop working. Wallets that use it will have to be set up again with the new address.</string>
+    <string name="tor_new_onion_note">The new address will be created at the next start of the node. The blockchain and the settings do not change.</string>
+    <string name="tor_new_onion_confirm">Change the address</string>
+    <string name="log_new_onion">.onion address deleted: a new one will be created at the next start of the node.</string>
 </resources>

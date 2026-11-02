@@ -895,7 +895,10 @@ fun SettingsScreen() {
 private fun OnionInfo() {
     val ctx = LocalContext.current
     val status by NodeState.status.collectAsStateWithLifecycle()
-    val onion = remember(status) { TorManager.savedOnion(ctx) }
+    var onion by remember(status) { mutableStateOf(TorManager.savedOnion(ctx)) }
+    // On ne change les clés que quand le nœud (et donc Tor) est arrêté
+    val stopped = status == NodeStatus.STOPPED || status == NodeStatus.ERROR
+    var confirmNewOnion by remember { mutableStateOf(false) }
     Column(
         Modifier
             .fillMaxWidth()
@@ -911,7 +914,39 @@ private fun OnionInfo() {
             CopyRow(onion, small = true)
             Text(stringResource(R.string.tor_port, TorManager.ONION_PORT), fontFamily = FontFamily.Monospace, fontSize = 14.sp)
             Hint(stringResource(R.string.tor_wallet_hint))
+            Spacer(Modifier.height(4.dp))
+            OutlinedButton(
+                onClick = { confirmNewOnion = true },
+                enabled = stopped,
+                border = BorderStroke(1.dp, if (stopped) Err else Muted),
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text(stringResource(R.string.tor_new_onion), color = if (stopped) Err else Muted) }
+            if (!stopped) Hint(stringResource(R.string.tor_new_onion_running), Warn)
         }
+    }
+    if (confirmNewOnion) {
+        AlertDialog(
+            onDismissRequest = { confirmNewOnion = false },
+            title = { Text(stringResource(R.string.tor_new_onion_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(R.string.tor_new_onion_text))
+                    Hint(stringResource(R.string.tor_new_onion_note))
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmNewOnion = false
+                    if (TorManager.resetOnion(ctx)) {
+                        onion = null
+                        NodeState.appendLog(ctx.getString(R.string.log_new_onion))
+                    }
+                }) { Text(stringResource(R.string.tor_new_onion_confirm), color = Err) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmNewOnion = false }) { Text(stringResource(R.string.btn_cancel)) }
+            },
+        )
     }
 }
 

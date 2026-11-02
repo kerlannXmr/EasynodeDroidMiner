@@ -212,4 +212,11 @@
     <string name="perm_see">Voir les autorisations</string>
     <string name="upd_blocked_samsung">La mise à jour est bloquée par le Bloqueur automatique de Samsung. Désactive-le dans Sécurité et confidentialité, puis réessaie.</string>
     <string name="upd_open_security">Ouvrir les réglages de sécurité</string>
+    <string name="tor_new_onion">Nouvelle adresse .onion</string>
+    <string name="tor_new_onion_running">Arrête le nœud pour changer l’adresse.</string>
+    <string name="tor_new_onion_title">Nouvelle adresse .onion ?</string>
+    <string name="tor_new_onion_text">L’adresse actuelle ne fonctionnera plus. Les wallets qui l’utilisent devront être reconfigurés avec la nouvelle adresse.</string>
+    <string name="tor_new_onion_note">La nouvelle adresse sera créée au prochain démarrage du nœud. La blockchain et les réglages ne changent pas.</string>
+    <string name="tor_new_onion_confirm">Changer l’adresse</string>
+    <string name="log_new_onion">Adresse .onion effacée : une nouvelle sera créée au prochain démarrage du nœud.</string>
 </resources>

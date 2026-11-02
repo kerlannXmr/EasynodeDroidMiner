@@ -39,6 +39,16 @@ object TorManager {
     private fun torDir(ctx: Context): File = ctx.getDir("TorService", Context.MODE_PRIVATE)
     private fun serviceDir(ctx: Context): File = File(torDir(ctx), "onion_rpc")
 
+    /**
+     * Efface les clés de l'adresse .onion : Tor en créera une nouvelle au prochain démarrage.
+     * À n'appeler que quand le nœud (et donc Tor) est arrêté. La blockchain et les réglages ne changent pas.
+     */
+    fun resetOnion(ctx: Context): Boolean {
+        val ok = !serviceDir(ctx).exists() || serviceDir(ctx).deleteRecursively()
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().remove(KEY_ONION).apply()
+        return ok
+    }
+
     /** Dernière adresse .onion connue (elle ne change pas tant que les données de l'app sont gardées). */
     fun savedOnion(ctx: Context): String? =
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY_ONION, null)
