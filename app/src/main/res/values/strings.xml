@@ -220,4 +220,5 @@
     <string name="tor_new_onion_note">The new address will be created at the next start of the node. The blockchain and the settings do not change.</string>
     <string name="tor_new_onion_confirm">Change the address</string>
     <string name="log_new_onion">.onion address deleted: a new one will be created at the next start of the node.</string>
+    <string name="home_red_word">Apocalypse13:17</string>
 </resources>

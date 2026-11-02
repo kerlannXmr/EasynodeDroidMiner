@@ -219,4 +219,5 @@
     <string name="tor_new_onion_note">La nouvelle adresse sera créée au prochain démarrage du nœud. La blockchain et les réglages ne changent pas.</string>
     <string name="tor_new_onion_confirm">Changer l’adresse</string>
     <string name="log_new_onion">Adresse .onion effacée : une nouvelle sera créée au prochain démarrage du nœud.</string>
+    <string name="home_red_word">Apocalypse13:17</string>
 </resources>

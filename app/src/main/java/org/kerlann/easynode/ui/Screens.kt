@@ -35,6 +35,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -573,6 +574,14 @@ fun NodeScreen(onOpenSettings: () -> Unit = {}) {
         Hint(stringResource(R.string.warn_data))
 
         GithubLinks()
+        // Mot en rouge, centré, tout en bas de l'accueil
+        Text(
+            stringResource(R.string.home_red_word),
+            color = Err,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
