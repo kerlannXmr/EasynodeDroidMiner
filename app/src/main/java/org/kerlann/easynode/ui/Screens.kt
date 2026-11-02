@@ -806,7 +806,7 @@ fun SettingsScreen() {
             SwitchRow(stringResource(R.string.set_tor), stringResource(R.string.set_tor_hint), s.torTx, editable) {
                 update(s.copy(torTx = it))
             }
-            if (s.torTx) OnionInfo()
+            if (s.torTx) OnionInfo(showNewAddress = true)
         }
 
         Section {
@@ -892,7 +892,7 @@ fun SettingsScreen() {
 
 /** Adresse .onion + port, avec bouton copier (Réglages et onglet Wallet). */
 @Composable
-private fun OnionInfo() {
+private fun OnionInfo(showNewAddress: Boolean = false) {
     val ctx = LocalContext.current
     val status by NodeState.status.collectAsStateWithLifecycle()
     var onion by remember(status) { mutableStateOf(TorManager.savedOnion(ctx)) }
@@ -907,13 +907,18 @@ private fun OnionInfo() {
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        if (onion == null) {
+        // Copie locale : Kotlin n'accepte pas d'utiliser directement une variable « by remember » comme texte
+        val address = onion
+        if (address == null) {
             Hint(stringResource(R.string.tor_pending), Warn)
         } else {
             Text(stringResource(R.string.tor_address), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-            CopyRow(onion, small = true)
+            CopyRow(address, small = true)
             Text(stringResource(R.string.tor_port, TorManager.ONION_PORT), fontFamily = FontFamily.Monospace, fontSize = 14.sp)
             Hint(stringResource(R.string.tor_wallet_hint))
+        }
+        // Bouton « Nouvelle adresse .onion » : seulement dans Réglages (pas dans l'onglet Wallet)
+        if (address != null && showNewAddress) {
             Spacer(Modifier.height(4.dp))
             OutlinedButton(
                 onClick = { confirmNewOnion = true },
