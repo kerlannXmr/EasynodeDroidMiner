@@ -98,7 +98,7 @@ The first synchronization takes from several hours to several days depending on 
 
 1. On your phone, open the **[latest release](https://github.com/kerlannXmr/EasynodeDroidMiner/releases/latest)** and download the `.apk` file.
 2. Open it and allow installation from this source when Android asks.
-3. If Play Protect warns about an unknown app, tap **More details › Install anyway** (the app is not distributed through the Play Store).
+3. If Play Protect warns about an unknown app or block, tap **More details › Install anyway** (the app is not distributed through the Play Store).You can also check the APK's **SHA-256**
 
 EasynodeDroid Miner installs **next to** EasynodeDroid (it does not replace it). The two apps keep their own blockchain and their own settings.
 
