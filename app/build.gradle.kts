@@ -87,6 +87,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     // Tor intégré (adresse .onion + proxy SOCKS)
-    implementation("info.guardianproject:tor-android:0.4.9.14")
+    implementation("info.guardianproject:tor-android:0.4.9.17")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 }
