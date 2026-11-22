@@ -12,7 +12,7 @@ android {
     // Android 17 (API 37.1), exigé par tor-android 0.4.9 ; targetSdk reste à 35
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
