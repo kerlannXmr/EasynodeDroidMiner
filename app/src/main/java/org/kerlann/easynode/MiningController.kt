@@ -17,7 +17,8 @@ import org.json.JSONObject
 class MiningController(private val ctx: Context) {
 
     private companion object {
-        const val HOT_C = 60f   // pause à partir de 60 °C, reprise dès que c'est en dessous
+        const val HOT_C = 60f    // pause à partir de 60 °C
+        const val COOL_C = 50f   // reprise seulement quand c'est redescendu à 50 °C
     }
 
     private var hot = false
@@ -113,12 +114,12 @@ class MiningController(private val ctx: Context) {
 
     /**
      * Pause si la batterie atteint 60 °C, ou si Android signale lui-même une surchauffe grave
-     * (sécurité). Pas de température de reprise : le minage repart dès que c'est redescendu.
+     * (sécurité). Reprise seulement à 50 °C, pour laisser le téléphone refroidir vraiment.
      */
     private fun updateHot(enabled: Boolean, tempC: Float) {
         if (!enabled) { hot = false; return }
         val severe = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             ctx.getSystemService(PowerManager::class.java).currentThermalStatus >= PowerManager.THERMAL_STATUS_SEVERE
-        hot = severe || tempC >= HOT_C
+        hot = severe || tempC >= HOT_C || (hot && tempC > COOL_C)
     }
 }

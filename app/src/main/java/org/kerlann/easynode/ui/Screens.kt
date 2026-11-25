@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
 import android.os.Build
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -61,6 +62,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
@@ -1110,14 +1112,15 @@ fun LogScreen() {
         if (lines.isNotEmpty()) listState.scrollToItem(lines.lastIndex)
     }
     val chooserTitle = stringResource(R.string.log_share_title)
+    var askClear by remember { mutableStateOf(false) }
     if (lines.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Hint(stringResource(R.string.log_empty)) }
     } else Box(Modifier.fillMaxSize()) {
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-        // place en bas pour que le bouton ne cache pas la dernière ligne
-        contentPadding = PaddingValues(bottom = 88.dp),
+        // place en bas pour que les boutons ne cachent pas les dernières lignes
+        contentPadding = PaddingValues(bottom = 148.dp),
     ) {
         itemsIndexed(lines) { _, line ->
             Text(
@@ -1134,20 +1137,45 @@ fun LogScreen() {
             )
         }
     }
-    FloatingActionButton(
-        onClick = {
-            val send = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "EasynodeDroid Miner log")
-                putExtra(Intent.EXTRA_TEXT, shareableLog(ctx, lines))
-            }
-            ctx.startActivity(Intent.createChooser(send, chooserTitle))
-        },
-        containerColor = XmrOrange,
-        contentColor = Color.White,
+    // Boutons en bas à droite : effacer le journal (petit) au-dessus de partager (orange)
+    Column(
         modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.log_share))
+        SmallFloatingActionButton(onClick = { askClear = true }) {
+            Icon(Icons.Filled.Delete, contentDescription = stringResource(R.string.log_clear))
+        }
+        FloatingActionButton(
+            onClick = {
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "EasynodeDroid Miner log")
+                    putExtra(Intent.EXTRA_TEXT, shareableLog(ctx, lines))
+                }
+                ctx.startActivity(Intent.createChooser(send, chooserTitle))
+            },
+            containerColor = XmrOrange,
+            contentColor = Color.White,
+        ) {
+            Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.log_share))
+        }
+    }
+    if (askClear) {
+        AlertDialog(
+            onDismissRequest = { askClear = false },
+            title = { Text(stringResource(R.string.log_clear_title)) },
+            text = { Text(stringResource(R.string.log_clear_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    askClear = false
+                    NodeState.clearLog()
+                }) { Text(stringResource(R.string.log_clear_confirm), color = Err) }
+            },
+            dismissButton = {
+                TextButton(onClick = { askClear = false }) { Text(stringResource(R.string.btn_cancel)) }
+            },
+        )
     }
     }
 }

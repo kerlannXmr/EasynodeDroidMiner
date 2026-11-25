@@ -143,6 +143,23 @@ object NodeState {
         }
     }
 
+    /**
+     * Efface le journal : l'écran, journal.log et l'ancien journal.old.log.
+     * Le nœud et le minage ne sont pas touchés ; une ligne datée indique l'effacement.
+     */
+    @Synchronized
+    fun clearLog() {
+        try { writer?.close() } catch (_: Exception) {}
+        writer = null
+        logFile?.let { f ->
+            f.delete()
+            File(f.parentFile, "journal.old.log").delete()
+        }
+        _log.value = emptyList()
+        val stamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
+        appendLog("===== $stamp · log cleared =====")
+    }
+
     @Synchronized
     private fun writeToFile(line: String) {
         val f = logFile ?: return

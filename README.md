@@ -160,7 +160,7 @@ Mining starts and stops on its own: it waits for the node to be synchronized, pa
 | Payout address | Main address of your wallet (starts with `4`) | – |
 | Cores | Number of CPU cores used for mining | 1 |
 | Only while charging | Pauses mining when the phone runs on battery | Off |
-| Pause if the phone gets hot | Pauses mining from 60 °C (battery temperature) or if Android reports a severe overheating, and resumes as soon as it cools down | On |
+| Pause if the phone gets hot | Pauses mining from 60 °C (battery temperature) or if Android reports a severe overheating, and resumes once it cools down to 50 °C | On |
 
 ### Light mode and fast mode
 

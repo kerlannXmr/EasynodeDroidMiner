@@ -126,6 +126,10 @@
     <string name="pass_hide">Hide</string>
     <string name="log_share">Share the log</string>
     <string name="log_share_title">Share the EasynodeDroid Miner log</string>
+    <string name="log_clear">Clear the log</string>
+    <string name="log_clear_title">Clear the log?</string>
+    <string name="log_clear_text">All log lines will be erased, including the older saved log. The node keeps running.</string>
+    <string name="log_clear_confirm">Clear</string>
     <string name="donate_address_label">XMR address for donations</string>
     <string name="donate_button">Donate by wallet</string>
     <string name="donate_copy">Copy</string>
@@ -171,7 +175,7 @@
     <string name="mine_only_charging">Only while charging</string>
     <string name="mine_only_charging_hint">Pauses mining when the phone runs on battery.</string>
     <string name="mine_pause_hot_set">Pause if the phone gets hot</string>
-    <string name="mine_pause_hot_set_hint">Pauses from 60 °C, resumes as soon as it cools down.</string>
+    <string name="mine_pause_hot_set_hint">Pauses from 60 °C, resumes once it cools down to 50 °C.</string>
     <string name="mine_warn_title">Good to know</string>
     <string name="mine_warn">Solo mining is a lottery: a phone has very little chance of finding a block. If it does, the whole reward (about 0.6 XMR) goes to your address. Mining heats the phone, wears the battery and slows down the node. It only runs when the node is synchronized. By default it uses the light mode (about 256 MB of memory) so that Android doesn’t close the app.</string>
     <string name="notif_mining">mining %1$d H/s</string>
