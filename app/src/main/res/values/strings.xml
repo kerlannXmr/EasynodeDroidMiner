@@ -161,6 +161,7 @@
     <string name="mine_pause_charging">Paused: plug the phone into its charger</string>
     <string name="mine_pause_hot">Paused: the phone is too hot, it is cooling down</string>
     <string name="mine_speed">Speed</string>
+    <string name="mine_temp">Battery temperature</string>
     <string name="mine_threads_label">Cores used</string>
     <string name="mine_blocks">Blocks found</string>
     <string name="mine_chance">Estimated chance</string>

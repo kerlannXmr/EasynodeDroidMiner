@@ -74,6 +74,7 @@ class MiningController(private val ctx: Context) {
                 threads = threads,
                 difficulty = st?.optLong("difficulty") ?: 0L,
                 pause = pause,
+                tempC = tempC,
             )
         )
     }

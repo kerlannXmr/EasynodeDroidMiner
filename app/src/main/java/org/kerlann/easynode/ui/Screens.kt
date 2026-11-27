@@ -295,10 +295,10 @@ private fun Section(title: String? = null, content: @Composable ColumnScope.() -
 }
 
 @Composable
-private fun KV(key: String, value: String) {
+private fun KV(key: String, value: String, valueColor: Color = Color.Unspecified) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(key, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontFamily = FontFamily.Monospace)
+        Text(value, fontFamily = FontFamily.Monospace, color = valueColor)
     }
 }
 
@@ -1027,6 +1027,18 @@ fun MiningScreen() {
                 Box(Modifier.size(10.dp).background(stateColor, CircleShape))
                 Spacer(Modifier.width(8.dp))
                 Text(stateText, fontWeight = FontWeight.SemiBold)
+            }
+            // Température de la batterie (celle qui sert à la pause 60 °C / reprise 50 °C)
+            if (m.enabled && mi != null && mi.tempC > 0f) {
+                KV(
+                    stringResource(R.string.mine_temp),
+                    "%.1f °C".format(mi.tempC),
+                    when {
+                        mi.tempC >= 60f -> Err
+                        mi.tempC >= 50f -> Warn
+                        else -> Color.Unspecified
+                    },
+                )
             }
             if (m.enabled && mi != null && mi.active) {
                 KV(stringResource(R.string.mine_speed), "${mi.speed} H/s")

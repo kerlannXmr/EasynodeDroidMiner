@@ -160,6 +160,7 @@
     <string name="mine_pause_charging">En pause : branche le téléphone sur son chargeur</string>
     <string name="mine_pause_hot">En pause : le téléphone est trop chaud, il refroidit</string>
     <string name="mine_speed">Vitesse</string>
+    <string name="mine_temp">Température batterie</string>
     <string name="mine_threads_label">Cœurs utilisés</string>
     <string name="mine_blocks">Blocs trouvés</string>
     <string name="mine_chance">Chance estimée</string>

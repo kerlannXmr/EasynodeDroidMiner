@@ -48,6 +48,7 @@ data class MiningInfo(
     val threads: Int,
     val difficulty: Long,  // difficulté du réseau
     val pause: MiningPause?,
+    val tempC: Float = 0f, // température de la batterie (°C, 0 si inconnue)
 )
 
 /** État partagé entre le service (qui fait tourner monerod) et l'interface. */
